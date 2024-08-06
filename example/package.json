@@ -1,0 +1,37 @@
+{
+  "name": "connect-example",
+  "homepage": "http://.",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "react-scripts.js start",
+    "build": "react-scripts.js build"
+  },
+  "dependencies": {
+    "http-proxy-middleware": "^3.0.0",
+    "@npaymelabs/connect": "file:..",
+    "react": "file:../node_modules/react",
+    "react-dom": "file:../node_modules/react-dom",
+    "wagmi": "file:../node_modules/wagmi",
+    "@tanstack/react-query": "file:../node_modules/@tanstack/react-query"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "description": "example npayme wallet connect",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC"
+}

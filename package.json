@@ -1,0 +1,77 @@
+{
+  "name": "@npaymelabs/connect",
+  "version": "0.0.2",
+  "description": "npayme web3 wallet connect",
+  "author": "moneta",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/npaymelabs/connect.git"
+  },
+  "main": "dist/index",
+  "types": "dist/index.d.ts",
+  "source": "src/index.js",
+  "engines": {
+    "node": ">=10"
+  },
+  "tsup": {
+    "entry": [
+      "src/index.tsx"
+    ],
+    "splitting": false,
+    "sourcemap": true,
+    "clean": true
+  },
+  "scripts": {
+    "build": "tsup"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "babel-eslint": "^10.0.3",
+    "cross-env": "^7.0.2",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-config-standard-react": "^9.2.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-standard": "^4.0.1",
+    "prettier": "^2.0.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tsup": "^8.1.0",
+    "typescript": "^5.5.4"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@coinbase/wallet-sdk": "^4.0.4",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@web3modal/wagmi": "^5.0.11",
+    "framer-motion": "^11.3.21",
+    "react-icons": "^5.2.1",
+    "styled-components": "^6.1.12",
+    "viem": "^2.18.7",
+    "wagmi": "^2.12.2"
+  },
+  "bugs": {
+    "url": "https://github.com/npaymelabs/connect/issues"
+  },
+  "homepage": "https://github.com/npaymelabs/connect#readme",
+  "directories": {
+    "example": "example"
+  },
+  "keywords": [
+    "connect",
+    "wallet"
+  ]
+}
