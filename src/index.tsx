@@ -1,12 +1,18 @@
 import { useEffect, useState } from 'react'
+// import {
+//   switchChain,
+//   watchAccount,
+//   watchPublicClient,
+//   watchClient
+// } from '@wagmi/core'
 
 import Connect from './components/Connect'
 import { WagmiProvider } from 'wagmi'
 import { mainnet, sepolia, polygon, baseSepolia } from 'wagmi/chains'
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 import { createWeb3Modal } from '@web3modal/wagmi/react'
-import { http, createConfig } from 'wagmi'
-import { coinbaseWallet } from 'wagmi/connectors'
+// import { http, createConfig } from 'wagmi'
+// import { coinbaseWallet } from 'wagmi/connectors'
 
 function ContextProvider(props) {
   const {
@@ -22,7 +28,8 @@ function ContextProvider(props) {
       icons: []
     },
     open,
-    setOpen
+    setOpen,
+    onAccountChanged,
   } = props
 
   const [wagmiConfig, setWagmiConfig] = useState<any>(null)
@@ -60,7 +67,7 @@ function ContextProvider(props) {
         walletFeatures: true // default to true
       },
       ssr: true,
-      enableInjected: true,
+      enableInjected: true
       // connectors: [
       //   coinbaseWallet({
       //     appName: metadata.name,
@@ -88,6 +95,17 @@ function ContextProvider(props) {
         '--w3m-color-mix-strength': 20
       }
     })
+
+    // const unwatchNetwork = watchNetwork(onNetworkChanged)
+    // const unwatchAccount = watchAccount(wagmiConfig, {
+    //   onChange: onAccountChanged
+    // })
+    // const unwatchPublicClient = watchPublicClient({}, onPublicClientChanged) // define chain id?
+    // const unwatchWalletClient = watchWalletClient({}, onWalletClientChanged)
+
+   
+    // function onPublicClientChanged(data: GetPublicClientResult) {}
+    // function onWalletClientChanged(data: GetWalletClientResult) {}
 
     setWagmiConfig(wagmiConfig)
   }, [])

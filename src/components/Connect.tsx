@@ -5,7 +5,7 @@ import Modal from './Modal'
 import ProgrammeHeader from '../header/Header'
 import { BaseLabel } from './DataDisplay'
 import { BrandedProgrammeButton } from './Buttons'
-// import { CreateWalletButton } from '../smartwallet/CreateWalletButton'
+import { CreateWalletButton } from '../smartwallet/CreateWalletButton'
 import Spacer from './Spacer'
 import SectionWrapper from './SectionWrapper'
 import Body from './Body'
@@ -58,16 +58,10 @@ function Connect(props) {
             I'd like to join and I need a Web3 Wallet
           </BaseLabel>
           <Spacer size={8} />
-          {/* {!address ? (
-            <CreateWalletButton
-              handleSuccess={handleSuccess}
-              handleError={(e) => console.log(e)}
-            />
-          ) : ( */}
-          <BrandedProgrammeButton onClick={() => {}}>
-            Recommended Coinbase Smart Wallet
-          </BrandedProgrammeButton>
-          {/* )} */}
+          <CreateWalletButton
+            handleSuccess={handleSuccess}
+            handleError={(e) => console.log(e)}
+          />
         </SectionWrapper>
         <SectionWrapper>
           <BaseLabel>I already have a Web3 Wallet</BaseLabel>
