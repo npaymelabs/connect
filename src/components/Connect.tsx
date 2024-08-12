@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useAccount } from 'wagmi'
+// import { useAccount } from 'wagmi'
 
 import Modal from './Modal'
 import ProgrammeHeader from '../header/Header'
@@ -12,9 +12,9 @@ import Body from './Body'
 import { useWeb3Modal } from '@web3modal/wagmi/react'
 
 function Connect(props) {
-  const { onConnect, brandColor, copyColor, open, setOpen } = props
+  const { address, onConnect, brandColor, copyColor, open, setOpen } = props
 
-  const { address } = useAccount()
+  // const { address } = useAccount()
   const { open: openWeb3Modal, close: closeWeb3Modal } = useWeb3Modal()
   console.log('address............... 0', address)
   useEffect(() => {

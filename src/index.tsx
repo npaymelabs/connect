@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-// import {
-//   switchChain,
-//   watchAccount,
-//   watchPublicClient,
-//   watchClient
-// } from '@wagmi/core'
+import {
+  // switchChain,
+  watchAccount
+  // watchPublicClient,
+  // watchClient
+} from '@wagmi/core'
 
 import Connect from './components/Connect'
 import { WagmiProvider } from 'wagmi'
@@ -14,7 +14,7 @@ import { createWeb3Modal } from '@web3modal/wagmi/react'
 // import { http, createConfig } from 'wagmi'
 // import { coinbaseWallet } from 'wagmi/connectors'
 
-function ContextProvider(props) {
+export default function ContextProvider(props) {
   const {
     onConnect,
     brandColor,
@@ -29,9 +29,10 @@ function ContextProvider(props) {
     },
     open,
     setOpen,
-    onAccountChanged,
+    onAccountChanged
   } = props
 
+  const [wallet, setWallet] = useState<`0x${string}` | undefined>()
   const [wagmiConfig, setWagmiConfig] = useState<any>(null)
 
   useEffect(() => {
@@ -82,7 +83,7 @@ function ContextProvider(props) {
       // }
     })
 
-    createWeb3Modal({
+    const modal = createWeb3Modal({
       wagmiConfig,
       projectId,
       themeMode: 'light',
@@ -97,13 +98,19 @@ function ContextProvider(props) {
     })
 
     // const unwatchNetwork = watchNetwork(onNetworkChanged)
-    // const unwatchAccount = watchAccount(wagmiConfig, {
-    //   onChange: onAccountChanged
-    // })
+    const unwatchAccount = watchAccount(wagmiConfig, {
+      onChange: (data) => {
+        const { address } = data
+        setWallet(address)
+        onAccountChanged(data)
+        if (!address) {
+          modal.close();
+        }
+      }
+    })
     // const unwatchPublicClient = watchPublicClient({}, onPublicClientChanged) // define chain id?
     // const unwatchWalletClient = watchWalletClient({}, onWalletClientChanged)
 
-   
     // function onPublicClientChanged(data: GetPublicClientResult) {}
     // function onWalletClientChanged(data: GetWalletClientResult) {}
 
@@ -113,6 +120,7 @@ function ContextProvider(props) {
   return wagmiConfig ? (
     <WagmiProvider config={wagmiConfig}>
       <Connect
+        address={wallet}
         onConnect={onConnect}
         brandColor={brandColor}
         copyColor={copyColor}
@@ -123,5 +131,3 @@ function ContextProvider(props) {
     </WagmiProvider>
   ) : null
 }
-
-export default ContextProvider

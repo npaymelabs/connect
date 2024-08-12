@@ -8,12 +8,12 @@
     "build": "react-scripts.js build"
   },
   "dependencies": {
-    "http-proxy-middleware": "^3.0.0",
     "@npaymelabs/connect": "file:..",
+    "@tanstack/react-query": "file:../node_modules/@tanstack/react-query",
+    "http-proxy-middleware": "^3.0.0",
     "react": "file:../node_modules/react",
     "react-dom": "file:../node_modules/react-dom",
-    "wagmi": "file:../node_modules/wagmi",
-    "@tanstack/react-query": "file:../node_modules/@tanstack/react-query"
+    "wagmi": "file:../node_modules/wagmi"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -33,5 +33,8 @@
   "description": "example npayme wallet connect",
   "main": "index.js",
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "source-map-loader": "^5.0.0"
+  }
 }

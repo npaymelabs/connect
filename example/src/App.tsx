@@ -40,9 +40,19 @@ const metadata = {
 
 function App() {
   const [open, setOpen] = useState(false)
+  const [address, setAddress] = useState()
 
   const connect = () => {
     console.log('connected')
+  }
+
+  const onAccountChanged = (data: any) => {
+    console.log('onAccountChanged.......', data)
+    const { address: wallet } = data
+    if (wallet) {
+      setAddress(wallet)
+      setOpen(false)
+    }
   }
 
   return (
@@ -51,12 +61,10 @@ function App() {
       onConnect={connect}
       open={open}
       setOpen={setOpen}
+      onAccountChanged={onAccountChanged}
     >
       <QueryClientProvider client={queryClient}>
-        <Web3ConnectButton
-          open={open}
-          setOpen={setOpen}
-        />
+        <Web3ConnectButton address={address} setAddress={setAddress} open={open} setOpen={setOpen} />
       </QueryClientProvider>
     </ContextProvider>
   )
