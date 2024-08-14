@@ -104,7 +104,7 @@ export default function ContextProvider(props) {
         setWallet(address)
         onAccountChanged(data)
         if (!address) {
-          modal.close();
+          modal.close()
         }
       }
     })

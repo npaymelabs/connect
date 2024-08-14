@@ -27,6 +27,17 @@ function Connect(props) {
         '--npayme__copy-color',
         copyColor || '#fff'
       )
+      document.documentElement.style.setProperty('--widget-card', '#fff')
+      document.documentElement.style.setProperty('--widget-contrast', '#1A1A1A')
+      document.documentElement.style.setProperty(
+        '--widget-contrast-low',
+        '#464646'
+      )
+      document.documentElement.style.setProperty(
+        '--widget-contrast-high',
+        '#000'
+      )
+
       document.documentElement.style.setProperty('--bg', copyColor || '#f2f4f5')
     }
 
