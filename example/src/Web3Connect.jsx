@@ -1,4 +1,3 @@
-// import { useAccount } from 'wagmi'
 import { useAccount, createStorage, useDisconnect } from 'wagmi'
 
 const Web3ConnectButton = (props) => {
@@ -8,7 +7,6 @@ const Web3ConnectButton = (props) => {
   const { connectors, disconnect } = useDisconnect()
 
   console.log('address................. 1', address)
-  console.log('isDisconnected................. 1', isDisconnected)
   const handleClick = () => {
     if (address) {
       localStorage.removeItem('@w3m-storage/SOCIAL_USERNAME')
@@ -23,7 +21,8 @@ const Web3ConnectButton = (props) => {
 
       disconnect()
       setAddress(undefined)
-    } else if (isDisconnected) {
+      setOpen(false)
+    } else {
       setOpen(true)
     }
   }

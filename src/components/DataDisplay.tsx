@@ -1,5 +1,13 @@
 import styled from 'styled-components'
 
+export const Link = styled.a`
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 12px;
+  margin-bottom: 4px;
+  color: var(--widget-contrast-low);
+`<any>
+
 export const BaseLabel = styled.div`
   font-weight: 400;
   font-size: 10px;

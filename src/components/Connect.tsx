@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 
 import Modal from './Modal'
 import ProgrammeHeader from '../header/Header'
-import { BaseLabel } from './DataDisplay'
+import { BaseLabel, Link } from './DataDisplay'
 import { BrandedProgrammeButton } from './Buttons'
 import { CreateWalletButton } from '../smartwallet/CreateWalletButton'
 import Spacer from './Spacer'
@@ -71,9 +71,13 @@ function Connect(props) {
           </BrandedProgrammeButton>
         </SectionWrapper>
         <SectionWrapper>
-          <BaseLabel text-transform='none'>
+          <Link
+            text-transform='none'
+            href={`https://ethereum.org/en/web3/`}
+            target={'_blank'}
+          >
             What's a Web3 Wallet and why do I need one?
-          </BaseLabel>
+          </Link>
         </SectionWrapper>
       </Body>
     </Modal>
