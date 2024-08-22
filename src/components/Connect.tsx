@@ -12,7 +12,7 @@ import Body from './Body'
 import { useWeb3Modal } from '@web3modal/wagmi/react'
 
 function Connect(props) {
-  const { address, onConnect, brandColor, copyColor, open, setOpen } = props
+  const { address, brandColor, copyColor, isOpen, close } = props
 
   // const { address } = useAccount()
   const { open: openWeb3Modal, close: closeWeb3Modal } = useWeb3Modal()
@@ -46,11 +46,11 @@ function Connect(props) {
     }
   }, [])
 
-  const close = () => setOpen(false)
-
   const handleSuccess = () => {
-    onConnect()
+    // Cloase Web3Modal
     closeWeb3Modal()
+
+    // Close this modal
     close()
   }
 
@@ -61,7 +61,7 @@ function Connect(props) {
   }, [address])
 
   return (
-    <Modal isOpen={open} close={close}>
+    <Modal isOpen={isOpen} close={close}>
       <ProgrammeHeader title='Join & Sign In' back={close} />
       <Body>
         <SectionWrapper>

@@ -14,8 +14,11 @@ import { createWeb3Modal } from '@web3modal/wagmi/react'
 // import { http, createConfig } from 'wagmi'
 // import { coinbaseWallet } from 'wagmi/connectors'
 
+let modal: any
+
 export default function ContextProvider(props) {
   const {
+    address,
     onConnect,
     brandColor,
     copyColor,
@@ -29,10 +32,15 @@ export default function ContextProvider(props) {
     },
     open,
     setOpen,
+    w3m,
+    setW3M,
     onAccountChanged
   } = props
 
   const [wallet, setWallet] = useState<`0x${string}` | undefined>()
+  // const [connectedWallet, setConnectedWallet] = useState<
+  //   `0x${string}` | undefined
+  // >(address)
   const [wagmiConfig, setWagmiConfig] = useState<any>(null)
 
   useEffect(() => {
@@ -83,7 +91,7 @@ export default function ContextProvider(props) {
       // }
     })
 
-    const modal = createWeb3Modal({
+    modal = createWeb3Modal({
       wagmiConfig,
       projectId,
       themeMode: 'light',
@@ -100,10 +108,10 @@ export default function ContextProvider(props) {
     // const unwatchNetwork = watchNetwork(onNetworkChanged)
     const unwatchAccount = watchAccount(wagmiConfig, {
       onChange: (data) => {
-        const { address } = data
         setWallet(address)
+        // setConnectedWallet(data.address)
         onAccountChanged(data)
-        if (!address) {
+        if (!data.address) {
           modal.close()
         }
       }
@@ -117,15 +125,35 @@ export default function ContextProvider(props) {
     setWagmiConfig(wagmiConfig)
   }, [])
 
+  // useEffect(() => {
+  //   if (w3m === true && modal && connectedWallet) {
+  //     // localStorage.removeItem('@w3m-storage/SOCIAL_USERNAME')
+  //     // localStorage.removeItem('@w3m/connected_social')
+  //     // localStorage.removeItem('@w3m-storage/EMAIL')
+  //     // localStorage.removeItem('@w3m-storage/EMAIL_LOGIN_USED_KEY')
+  //     // localStorage.removeItem('@w3m-storage/LAST_USED_CHAIN_KEY')
+  //     // localStorage.removeItem('@w3m-storage/SMART_ACCOUNT_ENABLED_NETWORKS')
+  //     // localStorage.removeItem('wagmi.recentConnectorId')
+  //     // localStorage.removeItem('@w3m/connected_connector')
+  //     // localStorage.removeItem('wagmi.store')
+
+  //     // disconnect()
+
+  //     modal.open()
+  //     setW3M(null)
+  //   }
+  // }, [w3m])
+
   return wagmiConfig ? (
     <WagmiProvider config={wagmiConfig}>
       <Connect
+        // address={connectedWallet}
         address={wallet}
         onConnect={onConnect}
         brandColor={brandColor}
         copyColor={copyColor}
-        open={open}
-        setOpen={setOpen}
+        isOpen={open}
+        close={() => setOpen(false)}
       />
       {props.children}
     </WagmiProvider>

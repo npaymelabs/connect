@@ -1,12 +1,11 @@
 import { useAccount, createStorage, useDisconnect } from 'wagmi'
 
 const Web3ConnectButton = (props) => {
-  const { address, setAddress, setOpen } = props
+  const { address, clear, openModal, setOpen, openWeb3Modal } = props
 
   const { isConnecting, isDisconnected, isReconnecting } = useAccount()
   const { connectors, disconnect } = useDisconnect()
 
-  console.log('address................. 1', address)
   const handleClick = () => {
     if (address) {
       localStorage.removeItem('@w3m-storage/SOCIAL_USERNAME')
@@ -20,10 +19,11 @@ const Web3ConnectButton = (props) => {
       localStorage.removeItem('wagmi.store')
 
       disconnect()
-      setAddress(undefined)
-      setOpen(false)
+      clear()
+      openModal()
+      // openWeb3Modal()
     } else {
-      setOpen(true)
+      openModal()
     }
   }
 
@@ -33,9 +33,9 @@ const Web3ConnectButton = (props) => {
       disabled={isConnecting || isReconnecting ? true : undefined}
     >
       {address
-        ? `Disconnect 0x...${address.substring(address.length - 5)}`
-        : isConnecting || isReconnecting
-        ? 'Try reconnecting...'
+        ? `0x${address.substring(0, 2)}...${address.substring(
+            address.length - 5
+          )}`
         : 'Connect Web3 Wallet'}
     </button>
   )
