@@ -41,17 +41,19 @@ const metadata = {
 function App() {
   const [open, setOpen] = useState(false)
   const [w3m, setW3m] = useState<boolean | null>(null)
-  const [address, setAddress] = useState()
-
+  const [addr1, setAddress] = useState()
+  console.log('addr1.....0', addr1)
   const onAccountChanged = (data: any) => {
-    console.log('onAccountChanged.......', data)
+    console.log(`onAccountChanged.......: addr1 = '${addr1}' `, data)
     const { address: update } = data
-    if ((address && update != address) || (!address && update)) {
+    if ((update && update != addr1) || !update) {
+      console.log('Update address to......', update)
       setAddress(update)
+      setOpen(false)
     }
-    setOpen(false)
   }
 
+  console.log('addr1.....1', addr1)
   return (
     <ContextProvider
       metadata={metadata}
@@ -64,10 +66,8 @@ function App() {
     >
       <QueryClientProvider client={queryClient}>
         <Web3ConnectButton
-          address={address}
-          clear={() => setAddress(undefined)}
+          address={addr1}
           openModal={() => setOpen(true)}
-          // setW3m={setW3m}
           openWeb3Modal={() => setW3m(true)}
         />
       </QueryClientProvider>
