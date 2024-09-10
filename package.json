@@ -1,6 +1,7 @@
 {
   "name": "@npaymelabs/connect",
   "version": "0.0.11",
+  "type": "module",
   "description": "npayme web3 wallet connect",
   "author": "moneta",
   "license": "MIT",
@@ -8,11 +9,15 @@
     "type": "git",
     "url": "git+https://github.com/npaymelabs/connect.git"
   },
-  "main": "dist/index",
-  "types": "dist/index.d.ts",
-  "source": "src/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
   "engines": {
-    "node": ">=10"
+    "node": "22.x"
   },
   "tsup": {
     "entry": [
@@ -23,7 +28,8 @@
     "clean": true
   },
   "scripts": {
-    "build": "tsup"
+    "build": "tsup",
+    "prepare": "npm run build"
   },
   "peerDependencies": {
     "react": "^18.0.0"
@@ -46,7 +52,7 @@
     "prettier": "^2.0.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "tsup": "^8.1.0",
+    "tsup": "^8.2.4",
     "typescript": "^5.5.4"
   },
   "files": [
@@ -63,8 +69,8 @@
     "react-icons": "^5.2.1",
     "styled-components": "^6.1.12",
     "tslib": "^2.6.3",
-    "viem": "^2.18.7",
-    "wagmi": "^2.12.2"
+    "viem": "^2.21.4",
+    "wagmi": "^2.12.9"
   },
   "bugs": {
     "url": "https://github.com/npaymelabs/connect/issues"
