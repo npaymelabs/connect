@@ -1,7 +1,7 @@
 {
   "name": "@npaymelabs/connect",
   "version": "0.0.10",
-  "type": "commonjs",
+  "type": "module",
   "description": "npayme web3 wallet connect",
   "author": "moneta",
   "license": "MIT",
