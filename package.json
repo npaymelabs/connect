@@ -69,8 +69,8 @@
     "react-icons": "^5.2.1",
     "styled-components": "^6.1.12",
     "tslib": "^2.6.3",
-    "viem": "^2.21.4",
-    "wagmi": "^2.12.9"
+    "viem": "^2.18.7",
+    "wagmi": "^2.12.2"
   },
   "bugs": {
     "url": "https://github.com/npaymelabs/connect/issues"
