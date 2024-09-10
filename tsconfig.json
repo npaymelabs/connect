@@ -16,7 +16,6 @@
     "noUnusedParameters": true,
     "allowSyntheticDefaultImports": true,
     "allowJs": true,
-    "target": "ES6",
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist", "example"]
