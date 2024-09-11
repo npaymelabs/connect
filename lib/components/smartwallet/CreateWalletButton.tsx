@@ -1,7 +1,7 @@
-import { useCallback } from 'react'
-import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk'
-import { CoinbaseWalletLogo } from './CoinbaseWalletLogo'
-import { BrandedProgrammeButton } from '../components/Buttons'
+import { useCallback } from "react";
+import { CoinbaseWalletSDK } from "@coinbase/wallet-sdk";
+import { CoinbaseWalletLogo } from "./CoinbaseWalletLogo";
+import { BrandedProgrammeButton } from "../components/Buttons";
 
 // const buttonStyles = {
 //   background: 'transparent',
@@ -21,14 +21,20 @@ import { BrandedProgrammeButton } from '../components/Buttons'
 // }
 
 const sdk = new CoinbaseWalletSDK({
-  appName: 'My Dapp',
-  appLogoUrl: 'https://example.com/logo.png',
-  appChainIds: [84532]
-})
+  appName: "My Dapp",
+  appLogoUrl: "https://example.com/logo.png",
+  appChainIds: [84532],
+});
 
-const provider = sdk.makeWeb3Provider()
+const provider = sdk.makeWeb3Provider();
 
-export function CreateWalletButton({ handleSuccess, handleError }) {
+export function CreateWalletButton({
+  handleSuccess,
+  handleError,
+}: {
+  handleSuccess: (address: string) => void;
+  handleError: (error: unknown) => void;
+}) {
   // const { connectors, connect, data } = useConnect()
 
   // const createWallet = useCallback(() => {
@@ -44,18 +50,18 @@ export function CreateWalletButton({ handleSuccess, handleError }) {
     try {
       // @ts-ignore
       const [address] = await provider.request({
-        method: 'eth_requestAccounts'
-      })
-      handleSuccess(address)
+        method: "eth_requestAccounts",
+      });
+      handleSuccess(address);
     } catch (error) {
-      handleError(error)
+      handleError(error);
     }
-  }, [handleSuccess, handleError])
+  }, [handleSuccess, handleError]);
 
   return (
     <BrandedProgrammeButton onClick={createWallet}>
       <CoinbaseWalletLogo />
       Create Coinbase Smart Wallet
     </BrandedProgrammeButton>
-  )
+  );
 }

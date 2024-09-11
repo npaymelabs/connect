@@ -1,7 +1,9 @@
 import { useCallback, useState } from 'react'
-import ContextProvider from '@npaymelabs/connect'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Web3ConnectButton from './Web3Connect'
+
+// https://nodejs.org/api/packages.html#packages_self_referencing_a_package_using_its_name
+import ContextProvider from '@npaymelabs/connect'
 
 // 0. Setup queryClient
 const queryClient = new QueryClient()
