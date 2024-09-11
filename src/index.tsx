@@ -1,17 +1,47 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
 import { watchChainId, watchAccount } from '@wagmi/core'
-import { mainnet, sepolia, polygon, baseSepolia } from 'wagmi/chains'
+import { mainnet, sepolia, polygon, baseSepolia, Chain } from 'wagmi/chains'
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 import { createWeb3Modal } from '@web3modal/wagmi/react'
+import { QueryClientProvider } from '@tanstack/react-query'
 // import { http, createConfig } from 'wagmi'
 // import { coinbaseWallet } from 'wagmi/connectors'
 
 import Connect from './components/Connect'
+import { Web3Modal } from '@web3modal/wagmi'
 
-let modal: any
+// declare global {
+//   var queryClient: any
+// }
 
-export default function ContextProvider(props) {
+let modal: Web3Modal
+
+type WalletContextProviderProps = {
+  brandColor?: string | number
+  copyColor?: string | number
+  projectId?: string
+  chains?: Array<Chain>
+  metadata?: {
+    name: string
+    description: string
+    url: string
+    icons: Array<string>
+  }
+  open?: boolean | null
+  setOpen: (open: boolean) => void
+  w3m: boolean | null
+  setW3M: (we3: boolean | null) => void
+  onAccountChanged: (any: any, prev?: number | string) => void
+  onNetworkChanged: (any: any, prev?: number | string) => void
+  siwe?: any
+  setSiwe?: (any: any) => void
+  children: React.ReactNode
+}
+
+export default function WalletContextProvider(
+  props: WalletContextProviderProps
+) {
   const {
     brandColor,
     copyColor,
@@ -28,7 +58,9 @@ export default function ContextProvider(props) {
     w3m,
     setW3M,
     onAccountChanged,
-    onNetworkChanged
+    onNetworkChanged,
+    siwe,
+    setSiwe
   } = props
 
   const [wallet, setWallet] = useState<`0x${string}` | undefined>()
@@ -50,6 +82,7 @@ export default function ContextProvider(props) {
       // });
 
       const wagmiConfig = defaultWagmiConfig({
+        // @ts-ignore
         chains,
         projectId,
         metadata,
@@ -126,16 +159,35 @@ export default function ContextProvider(props) {
     }
   }, [w3m])
 
+  console.log('globalThis.queryClient:', globalThis.queryClient)
+
   return wagmiConfig ? (
     <WagmiProvider config={wagmiConfig}>
-      <Connect
-        // address={connectedWallet}
-        address={wallet}
-        brandColor={brandColor}
-        copyColor={copyColor}
-        isOpen={open}
-        close={() => setOpen(false)}
-      />
+      {globalThis.queryClient ? (
+        <QueryClientProvider client={globalThis.queryClient}>
+          <Connect
+            // address={connectedWallet}
+            siwe={siwe}
+            setSiwe={setSiwe}
+            address={wallet}
+            brandColor={brandColor}
+            copyColor={copyColor}
+            isOpen={open}
+            close={() => setOpen(false)}
+          />
+        </QueryClientProvider>
+      ) : (
+        <Connect
+          // address={connectedWallet}
+          siwe={siwe}
+          setSiwe={setSiwe}
+          address={wallet}
+          brandColor={brandColor}
+          copyColor={copyColor}
+          isOpen={open}
+          close={() => setOpen(false)}
+        />
+      )}
       {props.children}
     </WagmiProvider>
   ) : null

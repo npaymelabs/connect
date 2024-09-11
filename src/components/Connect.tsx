@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-// import { useAccount } from 'wagmi'
 
 import Modal from './Modal'
 import ProgrammeHeader from '../header/Header'
@@ -10,12 +9,15 @@ import Spacer from './Spacer'
 import SectionWrapper from './SectionWrapper'
 import Body from './Body'
 import { useWeb3Modal } from '@web3modal/wagmi/react'
+// import { useSignMessage } from 'wagmi'
+import { SiweMessage } from 'siwe'
 
 function Connect(props) {
-  const { address, brandColor, copyColor, isOpen, close } = props
+  const { address, brandColor, copyColor, isOpen, close, siwe, setSiwe } = props
 
   // const { address } = useAccount()
   const { open: openWeb3Modal, close: closeWeb3Modal } = useWeb3Modal()
+  // const { signMessageAsync } = useSignMessage()
   console.log('address............... 0', address)
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -46,6 +48,21 @@ function Connect(props) {
     }
   }, [])
 
+  useEffect(() => {
+    if (address) {
+      handleSuccess()
+    }
+  }, [address])
+
+  useEffect(() => {
+    if (siwe && address) {
+      handleSiwe(siwe)
+      if (typeof setSiwe === 'function') {
+        setSiwe(null)
+      }
+    }
+  }, [siwe])
+
   const handleSuccess = () => {
     // Cloase Web3Modal
     closeWeb3Modal()
@@ -54,11 +71,58 @@ function Connect(props) {
     close()
   }
 
-  useEffect(() => {
-    if (address) {
-      handleSuccess()
+  const handleSiwe = async (siwe) => {
+    try {
+      const {
+        domain,
+        address,
+        statement,
+        uri,
+        version,
+        chainId,
+        nonce,
+        targets = []
+      } = siwe
+
+      const message = new SiweMessage({
+        domain,
+        address,
+        statement,
+        uri,
+        version,
+        chainId,
+        nonce
+      })
+
+      console.log('message.... 1', message)
+      const signature = 'NA'
+      // const signature = await signMessageAsync({
+      //   message: message.prepareMessage()
+      // })
+
+      console.log('signature.... 1', signature)
+      if (targets && targets.length > 0) {
+        for (let i = 0; i < targets.length; i++) {
+          const iFrm = document.getElementById(targets[i])
+          if (iFrm) {
+            // @ts-ignore
+            iFrm.contentWindow.postMessage(
+              {
+                type: '@npaymelabs/connect/siwe',
+                payload: {
+                  message,
+                  signature
+                }
+              },
+              '*'
+            )
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error)
     }
-  }, [address])
+  }
 
   return (
     <Modal isOpen={isOpen} close={close}>

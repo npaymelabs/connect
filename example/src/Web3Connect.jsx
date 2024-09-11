@@ -1,27 +1,12 @@
-import { useAccount, createStorage, useDisconnect } from 'wagmi'
+// import { useAccount } from 'wagmi'
 
 const Web3ConnectButton = (props) => {
-  const { address, clear, openModal, openWeb3Modal } = props
+  const { address, openModal, openWeb3Modal } = props
 
-  const { isConnecting, isDisconnected, isReconnecting } = useAccount()
-  // const { connectors, disconnect } = useDisconnect()
+  // const { isConnecting, isDisconnected, isReconnecting } = useAccount()
 
   const handleClick = () => {
     if (address) {
-      // localStorage.removeItem('@w3m-storage/SOCIAL_USERNAME')
-      // localStorage.removeItem('@w3m/connected_social')
-      // localStorage.removeItem('@w3m-storage/EMAIL')
-      // localStorage.removeItem('@w3m-storage/EMAIL_LOGIN_USED_KEY')
-      // localStorage.removeItem('@w3m-storage/LAST_USED_CHAIN_KEY')
-      // localStorage.removeItem('@w3m-storage/SMART_ACCOUNT_ENABLED_NETWORKS')
-      // localStorage.removeItem('wagmi.recentConnectorId')
-      // localStorage.removeItem('@w3m/connected_connector')
-      // localStorage.removeItem('wagmi.store')
-
-      // disconnect()
-      // clear()
-
-      // openModal()
       openWeb3Modal()
     } else {
       openModal()

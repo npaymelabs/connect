@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import ContextProvider from '@npaymelabs/connect'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Web3ConnectButton from './Web3Connect'
@@ -41,37 +41,59 @@ const metadata = {
 function App() {
   const [open, setOpen] = useState(false)
   const [w3m, setW3m] = useState<boolean | null>(null)
-  const [addr1, setAddress] = useState()
-  console.log('addr1.....0', addr1)
-  const onAccountChanged = (data: any) => {
-    console.log(`onAccountChanged.......: addr1 = '${addr1}' `, data)
-    const { address: update } = data
-    if ((update && update != addr1) || !update) {
+  const [address, setAddress] = useState('')
+
+  const [siwe, setSiwe] = useState<any>(null)
+
+  console.log('address.....0', address)
+  const onAccountChanged = useCallback((data: any) => {
+    console.log(`onAccountChanged.......: address = '${address}' `, data)
+    const { address: update = '' } = data
+    if ((update && update != address) || !update) {
       console.log('Update address to......', update)
       setAddress(update)
       setOpen(false)
     }
-  }
+  }, [])
 
-  console.log('addr1.....1', addr1)
+  const openModal = useCallback(() => setOpen(true), [])
+  const openWeb3Modal = useCallback(() => setW3m(true), [])
+
+  const handleSignIn = () => {
+    setSiwe({
+      domain: window.location.host,
+      address: address,
+      statement: 'Sign in to example.com',
+      uri: window.location.origin,
+      version: '1',
+      chainId: 1,
+      nonce: '1234556789',
+      targets: []
+    })
+  }
+  console.log('address.....1', address)
   return (
-    <ContextProvider
-      metadata={metadata}
-      open={open}
-      setOpen={setOpen}
-      close={close}
-      w3m={w3m}
-      setW3M={setW3m}
-      onAccountChanged={onAccountChanged}
-    >
-      <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={queryClient}>
+      <ContextProvider
+        metadata={metadata}
+        open={open}
+        setOpen={setOpen}
+        w3m={w3m}
+        setW3M={setW3m}
+        onAccountChanged={onAccountChanged}
+        siwe={siwe}
+        setSiwe={setSiwe}
+      >
         <Web3ConnectButton
-          address={addr1}
-          openModal={() => setOpen(true)}
-          openWeb3Modal={() => setW3m(true)}
+          address={address}
+          openModal={openModal}
+          openWeb3Modal={openWeb3Modal}
         />
-      </QueryClientProvider>
-    </ContextProvider>
+        {address && (
+          <button onClick={handleSignIn}>Sign In With Ethereum</button>
+        )}
+      </ContextProvider>
+    </QueryClientProvider>
   )
 }
 
