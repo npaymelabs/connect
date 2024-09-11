@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { WagmiProvider } from "wagmi";
-import { watchChainId, watchAccount } from "@wagmi/core";
-import { mainnet, sepolia, polygon, baseSepolia, Chain } from "wagmi/chains";
+import { watchChainId, watchAccount, CreateConfigParameters } from "@wagmi/core";
+import { mainnet, sepolia, polygon, baseSepolia } from "wagmi/chains";
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 import { createWeb3Modal } from "@web3modal/wagmi/react";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -22,7 +22,7 @@ type WalletContextProviderProps = {
   brandColor?: string;
   copyColor?: string;
   projectId?: string;
-  chains?: Array<Chain>;
+  chains?: CreateConfigParameters['chains'];
   metadata?: {
     name: string;
     description: string;
@@ -83,7 +83,6 @@ export default function WalletContextProvider(
       // });
 
       const wagmiConfig = defaultWagmiConfig({
-        // @ts-ignore
         chains,
         projectId,
         metadata,
