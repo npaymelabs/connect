@@ -4,7 +4,7 @@ import { watchChainId, watchAccount } from '@wagmi/core'
 import { mainnet, sepolia, polygon, baseSepolia, Chain } from 'wagmi/chains'
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 import { createWeb3Modal } from '@web3modal/wagmi/react'
-import { QueryClientProvider } from '@tanstack/react-query'
+// import { QueryClientProvider } from '@tanstack/react-query'
 // import { http, createConfig } from 'wagmi'
 // import { coinbaseWallet } from 'wagmi/connectors'
 
@@ -163,7 +163,7 @@ export default function WalletContextProvider(
 
   return wagmiConfig ? (
     <WagmiProvider config={wagmiConfig}>
-      {globalThis.queryClient ? (
+      {/* {globalThis.queryClient ? (
         <QueryClientProvider client={globalThis.queryClient}>
           <Connect
             // address={connectedWallet}
@@ -176,7 +176,7 @@ export default function WalletContextProvider(
             close={() => setOpen(false)}
           />
         </QueryClientProvider>
-      ) : (
+      ) : ( */}
         <Connect
           // address={connectedWallet}
           siwe={siwe}
@@ -187,7 +187,7 @@ export default function WalletContextProvider(
           isOpen={open}
           close={() => setOpen(false)}
         />
-      )}
+      {/* )} */}
       {props.children}
     </WagmiProvider>
   ) : null

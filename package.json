@@ -1,6 +1,6 @@
 {
   "name": "@npaymelabs/connect",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "npayme web3 wallet connect",
   "author": "moneta",
   "license": "MIT",
@@ -12,7 +12,7 @@
   "types": "dist/index.d.ts",
   "source": "src/index.tsx",
   "engines": {
-    "node": ">=10"
+    "node": ">=20.14.0"
   },
   "tsup": {
     "entry": [
@@ -67,6 +67,9 @@
     "styled-components": "^6.1.13",
     "viem": "^2.18.7",
     "wagmi": "^2.12.2"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.9.5"
   },
   "bugs": {
     "url": "https://github.com/npaymelabs/connect/issues"

@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+// @ts-ignore
 import ContextProvider from '@npaymelabs/connect'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Web3ConnectButton from './Web3Connect'
@@ -81,6 +82,9 @@ function App() {
         w3m={w3m}
         setW3M={setW3m}
         onAccountChanged={onAccountChanged}
+        
+          // @ts-ignore
+        
         siwe={siwe}
         setSiwe={setSiwe}
       >

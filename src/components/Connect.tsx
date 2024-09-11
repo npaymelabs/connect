@@ -9,7 +9,7 @@ import Spacer from './Spacer'
 import SectionWrapper from './SectionWrapper'
 import Body from './Body'
 import { useWeb3Modal } from '@web3modal/wagmi/react'
-// import { useSignMessage } from 'wagmi'
+import { useSignMessage } from 'wagmi'
 import { SiweMessage } from 'siwe'
 
 function Connect(props) {
@@ -17,7 +17,7 @@ function Connect(props) {
 
   // const { address } = useAccount()
   const { open: openWeb3Modal, close: closeWeb3Modal } = useWeb3Modal()
-  // const { signMessageAsync } = useSignMessage()
+  const { signMessageAsync } = useSignMessage()
   console.log('address............... 0', address)
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -95,10 +95,10 @@ function Connect(props) {
       })
 
       console.log('message.... 1', message)
-      const signature = 'NA'
-      // const signature = await signMessageAsync({
-      //   message: message.prepareMessage()
-      // })
+      // const signature = 'NA'
+      const signature = await signMessageAsync({
+        message: message.prepareMessage()
+      })
 
       console.log('signature.... 1', signature)
       if (targets && targets.length > 0) {
