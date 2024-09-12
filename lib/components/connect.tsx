@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { WagmiProvider } from "wagmi";
 import {
   watchChainId,
@@ -43,8 +43,6 @@ type WalletContextProviderProps = {
 export default function WalletContextProvider(
   props: WalletContextProviderProps
 ) {
-  const ref = useRef<AppKit>();
-
   const {
     brandColor,
     copyColor,
@@ -103,23 +101,20 @@ export default function WalletContextProvider(
     // }
   });
 
-  useEffect(() => {
-    if (!ref.current) {
-      ref.current = createWeb3Modal({
-        wagmiConfig,
-        projectId,
-        themeMode: "light",
-        defaultChain: mainnet,
-        // allWallets: 'ONLY_MOBILE',
-        excludeWalletIds: [],
-        enableSwaps: true, // Optional - true by default
-        themeVariables: {
-          "--w3m-color-mix": "#00DCFF",
-          "--w3m-color-mix-strength": 20,
-        },
-      });
-      console.log("modal", ref.current);
-    }
+  const modal = useMemo(() => {
+    return createWeb3Modal({
+      wagmiConfig,
+      projectId,
+      themeMode: "light",
+      defaultChain: mainnet,
+      // allWallets: 'ONLY_MOBILE',
+      excludeWalletIds: [],
+      enableSwaps: true, // Optional - true by default
+      themeVariables: {
+        "--w3m-color-mix": "#00DCFF",
+        "--w3m-color-mix-strength": 20,
+      },
+    });
   }, []);
 
   // reconnect(wagmiConfig);
@@ -129,16 +124,18 @@ export default function WalletContextProvider(
   return (
     <WagmiProvider config={wagmiConfig as ResolvedRegister["config"]}>
       <QueryClientProvider client={queryClient}>
-        <Connect
-          // address={connectedWallet}
-          siwe={siwe}
-          setSiwe={setSiwe}
-          address={wallet}
-          brandColor={brandColor}
-          copyColor={copyColor}
-          isOpen={!!open}
-          close={() => setOpen(false)}
-        />
+        {modal && (
+          <Connect
+            // address={connectedWallet}
+            siwe={siwe}
+            setSiwe={setSiwe}
+            address={wallet}
+            brandColor={brandColor}
+            copyColor={copyColor}
+            isOpen={!!open}
+            close={() => setOpen(false)}
+          />
+        )}
         <Observer
           onAccountChanged={onAccountChanged}
           setW3M={setW3M}
@@ -146,7 +143,7 @@ export default function WalletContextProvider(
           onNetworkChanged={onNetworkChanged}
           wagmiConfig={wagmiConfig}
           setWallet={setWallet}
-          modal={ref.current as AppKit | undefined}
+          modal={modal}
         />
         {props.children}
       </QueryClientProvider>
@@ -168,7 +165,7 @@ const Observer = ({
   setW3M: (we3: boolean | null) => void;
   onAccountChanged: (any: any, prev?: number | string) => void;
   onNetworkChanged?: (any: number, prev?: number | string) => void;
-  modal: AppKit | undefined;
+  modal: AppKit;
   setWallet: (address: `0x${string}` | undefined) => void;
 }) => {
   useEffect(() => {
