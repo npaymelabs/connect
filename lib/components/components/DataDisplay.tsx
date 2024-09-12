@@ -40,7 +40,11 @@ const Data = styled.p`
 //   style?: { label: React.CSSProperties; data: React.CSSProperties };
 // };
 
-function DataDisplay({ label, data, style }) {
+function DataDisplay({ label, data, style }: {
+  label: string;
+  data: string | React.ReactNode;
+  style?: { label: React.CSSProperties; data: React.CSSProperties };
+}) {
   return (
     <div>
       <Label style={style?.label}>{label}</Label>

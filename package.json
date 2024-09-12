@@ -1,82 +1,59 @@
 {
   "name": "@npaymelabs/connect",
-  "version": "0.0.17",
-  "description": "npayme web3 wallet connect",
-  "author": "moneta",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/npaymelabs/connect.git"
-  },
-  "main": "dist/esm/index",
-  "types": "dist/index.d.ts",
-  "source": "src/index.tsx",
-  "engines": {
-    "node": ">=10"
-  },
-  "tsup": {
-    "entry": [
-      "src/index.tsx"
-    ],
-    "dts": true,
-    "splitting": false,
-    "sourcemap": false,
-    "clean": true
-  },
-  "scripts": {
-    "build": "tsup src/index.tsx --format esm --legacy-output"
-  },
-  "peerDependencies": {
-    "react": "^18.0.0"
-  },
-  "devDependencies": {
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "babel-eslint": "^10.0.3",
-    "cross-env": "^7.0.2",
-    "eslint-config-prettier": "^6.7.0",
-    "eslint-config-standard": "^14.1.0",
-    "eslint-config-standard-react": "^9.2.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-node": "^11.0.0",
-    "eslint-plugin-prettier": "^3.1.1",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-react": "^7.17.0",
-    "eslint-plugin-standard": "^4.0.1",
-    "prettier": "^2.0.4",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "tslib": "^2.7.0",
-    "tsup": "^8.2.4",
-    "typescript": "^5.5.4"
+  "private": false,
+  "version": "0.0.18",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/lib/main.d.ts",
+      "default": "./dist/main.js"
+    }
   },
   "files": [
     "dist"
   ],
-  "dependencies": {
-    "@coinbase/wallet-sdk": "^4.0.4",
-    "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.5",
-    "@wagmi/core": "^2.13.4",
-    "@walletconnect/keyvaluestorage": "^1.1.1",
-    "@web3modal/wagmi": "^5.1.0",
-    "framer-motion": "^11.3.21",
-    "react-icons": "^5.2.1",
-    "siwe": "^2.3.2",
-    "styled-components": "^6.1.13",
-    "viem": "^2.18.7",
-    "wagmi": "^2.12.2"
-  },
-  "bugs": {
-    "url": "https://github.com/npaymelabs/connect/issues"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/npaymelabs/connect.git"
   },
   "homepage": "https://github.com/npaymelabs/connect#readme",
-  "directories": {
-    "example": "example"
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b ./tsconfig.lib.json && vite build",
+    "watch": "vite build --watch",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview",
+    "prepare": "yarn build"
   },
-  "keywords": [
-    "connect",
-    "wallet"
-  ]
+  "dependencies": {
+    "@tanstack/react-query": "^5.55.4",
+    "@web3modal/wagmi": "^5.1.7",
+    "ethers": "^6.13.2",
+    "framer-motion": "^11.5.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.3.0",
+    "siwe": "^2.3.2",
+    "styled-components": "^6.1.13",
+    "viem": "^2.21.5",
+    "wagmi": "^2.12.10"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.9.0",
+    "@types/node": "^22.5.4",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "eslint": "^9.9.0",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.9",
+    "glob": "^11.0.0",
+    "globals": "^15.9.0",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^8.0.1",
+    "vite": "^5.4.1",
+    "vite-plugin-dts": "^4.2.1"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

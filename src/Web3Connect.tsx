@@ -1,7 +1,11 @@
 // import { useAccount } from 'wagmi'
 
-const Web3ConnectButton = (props) => {
-  const { address, openModal, openWeb3Modal } = props
+const Web3ConnectButton = ({ address, openModal, openWeb3Modal }: {
+  address: string
+  openModal: () => void
+  openWeb3Modal: () => void
+}) => {
+   
 
   // const { isConnecting, isDisconnected, isReconnecting } = useAccount()
 
