@@ -8,9 +8,10 @@ import {
   Config,
   // reconnect,
 } from "@wagmi/core";
-import { mainnet, sepolia, polygon, baseSepolia } from "viem/chains";
+import { mainnet, sepolia, polygon, baseSepolia } from "wagmi/chains";
 // https://github.com/WalletConnect/web3modal/issues/1549#issuecomment-1845352911
-import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi/react";
+import { createWeb3Modal } from '@web3modal/wagmi/react'
+import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Connect from "./components/Connect";
 import type { AppKit } from "@web3modal/base";
@@ -35,8 +36,6 @@ type WalletContextProviderProps = {
   setW3M: (we3: boolean | null) => void;
   onAccountChanged: (any: any, prev?: number | string) => void;
   onNetworkChanged?: (any: number, prev?: number | string) => void;
-  siwe?: any;
-  setSiwe?: (any: any) => void;
   children: React.ReactNode;
 };
 
@@ -60,12 +59,10 @@ export default function WalletContextProvider(
     setW3M,
     onAccountChanged,
     onNetworkChanged,
-    siwe,
-    setSiwe,
     ssr,
   } = props;
 
-  const [wallet, setWallet] = useState<`0x${string}` | undefined>();
+  const [, setWallet] = useState<`0x${string}` | undefined>();
 
   const wagmiConfig = defaultWagmiConfig({
     chains,
@@ -101,6 +98,8 @@ export default function WalletContextProvider(
     // }
   });
 
+  
+
   const modal = useMemo(() => {
     return createWeb3Modal({
       wagmiConfig,
@@ -127,9 +126,6 @@ export default function WalletContextProvider(
         {modal && (
           <Connect
             // address={connectedWallet}
-            siwe={siwe}
-            setSiwe={setSiwe}
-            address={wallet}
             brandColor={brandColor}
             copyColor={copyColor}
             isOpen={!!open}

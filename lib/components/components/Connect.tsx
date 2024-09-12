@@ -9,26 +9,21 @@ import Spacer from "./Spacer";
 import SectionWrapper from "./SectionWrapper";
 import Body from "./Body";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
-import { useSignMessage } from "wagmi";
-import { SiweMessage } from "siwe";
-import { Address } from "viem";
+import { useAccount } from "wagmi";
 
 function Connect(props: {
-  address?: Address;
   brandColor?: string;
   copyColor?: string;
   isOpen: boolean;
   close: () => void;
-  siwe: any;
-  setSiwe: any;
 }) {
-  const { address, brandColor, copyColor, isOpen, close, siwe, setSiwe } =
-    props;
+  const account = useAccount();
+  const { brandColor, copyColor, isOpen, close } = props;
 
   // const { address } = useAccount()
   const { open: openWeb3Modal, close: closeWeb3Modal } = useWeb3Modal();
-  const { signMessageAsync } = useSignMessage();
-  console.log("address............... 0", address);
+
+  console.log("address............... 0", account.address);
   useEffect(() => {
     if (typeof window !== "undefined") {
       document.documentElement.style.setProperty(
@@ -65,19 +60,10 @@ function Connect(props: {
   }, []);
 
   useEffect(() => {
-    if (address) {
+    if (account.address) {
       handleSuccess();
     }
-  }, [address]);
-
-  useEffect(() => {
-    if (siwe && address) {
-      handleSiwe(siwe);
-      if (typeof setSiwe === "function") {
-        setSiwe(null);
-      }
-    }
-  }, [siwe]);
+  }, [account]);
 
   const handleSuccess = () => {
     // Cloase Web3Modal
@@ -85,68 +71,6 @@ function Connect(props: {
 
     // Close this modal
     close();
-  };
-
-  const handleSiwe = async (siwe: {
-    domain: string;
-    address: string;
-    statement: string;
-    uri: string;
-    version: string;
-    chainId: number;
-    nonce: string;
-    targets: string[];
-  }) => {
-    try {
-      const {
-        domain,
-        address,
-        statement,
-        uri,
-        version,
-        chainId,
-        nonce,
-        targets = [],
-      } = siwe;
-
-      const message = new SiweMessage({
-        domain,
-        address,
-        statement,
-        uri,
-        version,
-        chainId,
-        nonce,
-      });
-
-      console.log("message.... 1", message);
-      // const signature = "NA";
-      const signature = await signMessageAsync({
-        message: message.prepareMessage(),
-      });
-
-      console.log("signature.... 1", signature);
-      if (targets && targets.length > 0) {
-        for (let i = 0; i < targets.length; i++) {
-          const iFrm = document.getElementById(targets[i]);
-          if (iFrm) {
-            // @ts-ignore
-            iFrm.contentWindow.postMessage(
-              {
-                type: "@npaymelabs/connect/siwe",
-                payload: {
-                  message,
-                  signature,
-                },
-              },
-              "*"
-            );
-          }
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   return (
