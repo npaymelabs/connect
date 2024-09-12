@@ -5,12 +5,15 @@ import {
   watchAccount,
   CreateConfigParameters,
   ResolvedRegister,
+  Config,
   // reconnect,
 } from "@wagmi/core";
 import { mainnet, sepolia, polygon, baseSepolia } from "viem/chains";
-import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi";
+// https://github.com/WalletConnect/web3modal/issues/1549#issuecomment-1845352911
+import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Connect from "./components/Connect";
+import type { AppKit } from "@web3modal/base";
 
 const queryClient = new QueryClient();
 
@@ -112,34 +115,12 @@ export default function WalletContextProvider(
     },
   });
 
+  console.log("modal", modal);
+
+
   // reconnect(wagmiConfig);
 
   // const { wagmiConfig } = useMemo(() => {
-
-  watchChainId(wagmiConfig, {
-    onChange: (chainId, prevChainId) => {
-      if (typeof onNetworkChanged === "function") {
-        onNetworkChanged(chainId, prevChainId);
-      }
-    },
-  });
-
-  watchAccount(wagmiConfig, {
-    onChange: (data) => {
-      setWallet(data.address);
-      onAccountChanged(data);
-      if (!data.address) {
-        modal.close();
-      }
-    },
-  });
-
-  useEffect(() => {
-    if (w3m === true && modal) {
-      modal.open();
-      setW3M(null);
-    }
-  }, [w3m]);
 
   return (
     <WagmiProvider config={wagmiConfig as ResolvedRegister["config"]}>
@@ -154,8 +135,66 @@ export default function WalletContextProvider(
           isOpen={!!open}
           close={() => setOpen(false)}
         />
+        <Observer
+          onAccountChanged={onAccountChanged}
+          setW3M={setW3M}
+          w3m={w3m}
+          onNetworkChanged={onNetworkChanged}
+          wagmiConfig={wagmiConfig}
+          setWallet={setWallet}
+          modal={modal}
+        />
         {props.children}
       </QueryClientProvider>
     </WagmiProvider>
   );
 }
+
+const Observer = ({
+  onAccountChanged,
+  setW3M,
+  w3m,
+  onNetworkChanged,
+  wagmiConfig,
+  setWallet,
+  modal,
+}: {
+  wagmiConfig: Config;
+  w3m: boolean | null;
+  setW3M: (we3: boolean | null) => void;
+  onAccountChanged: (any: any, prev?: number | string) => void;
+  onNetworkChanged?: (any: number, prev?: number | string) => void;
+  modal: AppKit;
+  setWallet: (address: `0x${string}` | undefined) => void;
+}) => {
+  useEffect(() => {
+    console.log("Observer is running");
+
+    watchChainId(wagmiConfig, {
+      onChange: (chainId, prevChainId) => {
+        if (typeof onNetworkChanged === "function") {
+          onNetworkChanged(chainId, prevChainId);
+        }
+      },
+    });
+
+    watchAccount(wagmiConfig, {
+      onChange: (data) => {
+        setWallet(data.address);
+        onAccountChanged(data);
+        if (!data.address) {
+          modal.close();
+        }
+      },
+    });
+  }, []);
+
+  useEffect(() => {
+    if (w3m === true && modal) {
+      modal.open();
+      setW3M(null);
+    }
+  }, [w3m]);
+
+  return <></>;
+};
