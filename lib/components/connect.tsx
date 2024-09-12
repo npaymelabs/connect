@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { WagmiProvider } from "wagmi";
 import {
   watchChainId,
@@ -43,6 +43,8 @@ type WalletContextProviderProps = {
 export default function WalletContextProvider(
   props: WalletContextProviderProps
 ) {
+  const ref = useRef<AppKit>();
+
   const {
     brandColor,
     copyColor,
@@ -101,22 +103,24 @@ export default function WalletContextProvider(
     // }
   });
 
-  const modal = createWeb3Modal({
-    wagmiConfig,
-    projectId,
-    themeMode: "light",
-    defaultChain: mainnet,
-    // allWallets: 'ONLY_MOBILE',
-    excludeWalletIds: [],
-    enableSwaps: true, // Optional - true by default
-    themeVariables: {
-      "--w3m-color-mix": "#00DCFF",
-      "--w3m-color-mix-strength": 20,
-    },
-  });
-
-  console.log("modal", modal);
-
+  useEffect(() => {
+    if (!ref.current) {
+      ref.current = createWeb3Modal({
+        wagmiConfig,
+        projectId,
+        themeMode: "light",
+        defaultChain: mainnet,
+        // allWallets: 'ONLY_MOBILE',
+        excludeWalletIds: [],
+        enableSwaps: true, // Optional - true by default
+        themeVariables: {
+          "--w3m-color-mix": "#00DCFF",
+          "--w3m-color-mix-strength": 20,
+        },
+      });
+      console.log("modal", ref.current);
+    }
+  }, []);
 
   // reconnect(wagmiConfig);
 
@@ -142,7 +146,7 @@ export default function WalletContextProvider(
           onNetworkChanged={onNetworkChanged}
           wagmiConfig={wagmiConfig}
           setWallet={setWallet}
-          modal={modal}
+          modal={ref.current as AppKit | undefined}
         />
         {props.children}
       </QueryClientProvider>
@@ -164,7 +168,7 @@ const Observer = ({
   setW3M: (we3: boolean | null) => void;
   onAccountChanged: (any: any, prev?: number | string) => void;
   onNetworkChanged?: (any: number, prev?: number | string) => void;
-  modal: AppKit;
+  modal: AppKit | undefined;
   setWallet: (address: `0x${string}` | undefined) => void;
 }) => {
   useEffect(() => {
@@ -182,7 +186,7 @@ const Observer = ({
       onChange: (data) => {
         setWallet(data.address);
         onAccountChanged(data);
-        if (!data.address) {
+        if (!data.address && modal) {
           modal.close();
         }
       },
