@@ -1,45 +1,16 @@
 import { useCallback, useState } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Web3ConnectButton from "./Web3Connect";
 
 // https://nodejs.org/api/packages.html#packages_self_referencing_a_package_using_its_name
 import ContextProvider from "@npaymelabs/connect";
 import { mainnet, sepolia, polygon, baseSepolia } from "viem/chains";
 
-// 0. Setup queryClient
-const queryClient = new QueryClient();
-
-// const projectId = '64c300c731392456340fe626355b366e'
-// const chains = [mainnet, baseSepolia] as const
 const metadata = {
   name: "example",
   description: "npayme connect example",
   url: "",
   icons: [],
 };
-
-// const wagmiConfig = defaultWagmiConfig({
-//   chains,
-//   projectId,
-//   metadata,
-//   ssr: true,
-//   enableInjected: true
-// })
-
-// const wagmiConfig = createConfig({
-//   chains,
-//   ssr: true,
-//   connectors: [
-//     coinbaseWallet({
-//       appName: 'Example'
-//       // preference: 'smartWalletOnly',
-//     })
-//   ],
-//   transports: {
-//     [mainnet.id]: http(),
-//     [baseSepolia.id]: http()
-//   }
-// })
 
 function App() {
   const [open, setOpen] = useState(false);
@@ -76,31 +47,28 @@ function App() {
   };
   console.log("address.....1", address);
 
-  const chains = [mainnet, sepolia, polygon, baseSepolia];
+  const chains = [mainnet, sepolia, polygon, baseSepolia] as const;
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ContextProvider
-        chains={chains}
-        metadata={metadata}
-        open={open}
-        setOpen={setOpen}
-        w3m={w3m}
-        setW3M={setW3m}
-        onAccountChanged={onAccountChanged}
-        siwe={siwe}
-        setSiwe={setSiwe}
-      >
-        <Web3ConnectButton
-          address={address}
-          openModal={openModal}
-          openWeb3Modal={openWeb3Modal}
-        />
-        {address && (
-          <button onClick={handleSignIn}>Sign In With Ethereum</button>
-        )}
-      </ContextProvider>
-    </QueryClientProvider>
+    <ContextProvider
+      chains={chains}
+      metadata={metadata}
+      open={open}
+      setOpen={setOpen}
+      w3m={w3m}
+      setW3M={setW3m}
+      onAccountChanged={onAccountChanged}
+      siwe={siwe}
+      setSiwe={setSiwe}
+    >
+      <Web3ConnectButton
+        address={address}
+        openModal={openModal}
+        openWeb3Modal={openWeb3Modal}
+      />
+      {address && <button onClick={handleSignIn}>Sign In With Ethereum</button>}
+      <h1> @npaymelabs/connect </h1>
+    </ContextProvider>
   );
 }
 

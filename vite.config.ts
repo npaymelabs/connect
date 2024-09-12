@@ -20,7 +20,13 @@ export default defineConfig({
       formats: ["es"],
     },
     rollupOptions: {
-      external: ["react", "react/jsx-runtime"],
+      external: [
+        "react",
+        "react/jsx-runtime",
+        "wagmi",
+        "viem",
+        "@tanstack/react-query",
+      ],
       input: Object.fromEntries(
         // https://rollupjs.org/configuration-options/#input
         glob

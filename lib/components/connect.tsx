@@ -1,28 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { WagmiProvider } from "wagmi";
-import { watchChainId, watchAccount, CreateConfigParameters } from "@wagmi/core";
-import { mainnet, sepolia, polygon, baseSepolia } from "wagmi/chains";
-import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
-import { createWeb3Modal } from "@web3modal/wagmi/react";
-import { QueryClientProvider } from "@tanstack/react-query";
-// import { http, createConfig } from 'wagmi'
-// import { coinbaseWallet } from 'wagmi/connectors'
-
-import { AppKit } from "@web3modal/base";
-
+import {
+  watchChainId,
+  watchAccount,
+  CreateConfigParameters,
+  ResolvedRegister,
+  // reconnect,
+} from "@wagmi/core";
+import { mainnet, sepolia, polygon, baseSepolia } from "viem/chains";
+import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Connect from "./components/Connect";
 
-// declare global {
-//   var queryClient: any
-// }
-
-let modal: AppKit;
+const queryClient = new QueryClient();
 
 type WalletContextProviderProps = {
   brandColor?: string;
   copyColor?: string;
   projectId?: string;
-  chains?: CreateConfigParameters['chains'];
+  chains?: CreateConfigParameters["chains"];
+  ssr?: boolean;
   metadata?: {
     name: string;
     description: string;
@@ -62,95 +59,80 @@ export default function WalletContextProvider(
     onNetworkChanged,
     siwe,
     setSiwe,
+    ssr,
   } = props;
 
   const [wallet, setWallet] = useState<`0x${string}` | undefined>();
-  const [wagmiConfig, setWagmiConfig] = useState<any>(null);
 
-  useEffect(() => {
-    if (!modal) {
-      // const wagmiConfig = createConfig({
-      //   chains: [baseSepolia],
-      //   connectors: [
-      //     coinbaseWallet({
-      //       appName: 'Create Wagmi',
-      //       preference: 'smartWalletOnly',
-      //     }),
-      //   ],
-      //   transports: {
-      //     [baseSepolia.id]: http(),
-      //   },
-      // });
+  const wagmiConfig = defaultWagmiConfig({
+    chains,
+    projectId,
+    metadata,
+    auth: {
+      email: true, // default to true
+      socials: [
+        "google",
+        "x",
+        "github",
+        "discord",
+        "apple",
+        "facebook",
+        "farcaster",
+      ],
+      showWallets: true, // default to true
+      walletFeatures: true, // default to true
+    },
+    ssr,
+    enableInjected: true,
+    // connectors: [
+    //   coinbaseWallet({
+    //     appName: metadata.name,
+    //     preference: 'all' // 'smartWalletOnly'
+    //   })
+    // ],
+    // transports: {
+    //   [mainnet.id]: http(),
+    //   [polygon.id]: http(),
+    //   [sepolia.id]: http(),
+    //   [baseSepolia.id]: http()
+    // }
+  });
 
-      const wagmiConfig = defaultWagmiConfig({
-        chains,
-        projectId,
-        metadata,
-        auth: {
-          email: true, // default to true
-          socials: [
-            "google",
-            "x",
-            "github",
-            "discord",
-            "apple",
-            "facebook",
-            "farcaster",
-          ],
-          showWallets: true, // default to true
-          walletFeatures: true, // default to true
-        },
-        ssr: true,
-        enableInjected: true,
-        // connectors: [
-        //   coinbaseWallet({
-        //     appName: metadata.name,
-        //     preference: 'all' // 'smartWalletOnly'
-        //   })
-        // ],
-        // transports: {
-        //   [mainnet.id]: http(),
-        //   [polygon.id]: http(),
-        //   [sepolia.id]: http(),
-        //   [baseSepolia.id]: http()
-        // }
-      });
+  const modal = createWeb3Modal({
+    wagmiConfig,
+    projectId,
+    themeMode: "light",
+    defaultChain: mainnet,
+    // allWallets: 'ONLY_MOBILE',
+    excludeWalletIds: [],
+    enableSwaps: true, // Optional - true by default
+    themeVariables: {
+      "--w3m-color-mix": "#00DCFF",
+      "--w3m-color-mix-strength": 20,
+    },
+  });
 
-      modal = createWeb3Modal({
-        wagmiConfig,
-        projectId,
-        themeMode: "light",
-        defaultChain: mainnet,
-        // allWallets: 'ONLY_MOBILE',
-        excludeWalletIds: [],
-        enableSwaps: true, // Optional - true by default
-        themeVariables: {
-          "--w3m-color-mix": "#00DCFF",
-          "--w3m-color-mix-strength": 20,
-        },
-      });
+  // reconnect(wagmiConfig);
 
-      watchChainId(wagmiConfig, {
-        onChange: (chainId, prevChainId) => {
-          if (typeof onNetworkChanged === "function") {
-            onNetworkChanged(chainId, prevChainId);
-          }
-        },
-      });
+  // const { wagmiConfig } = useMemo(() => {
 
-      watchAccount(wagmiConfig, {
-        onChange: (data) => {
-          setWallet(data.address);
-          onAccountChanged(data);
-          if (!data.address) {
-            modal.close();
-          }
-        },
-      });
+  watchChainId(wagmiConfig, {
+    onChange: (chainId, prevChainId) => {
+      if (typeof onNetworkChanged === "function") {
+        onNetworkChanged(chainId, prevChainId);
+      }
+    },
+  });
 
-      setWagmiConfig(wagmiConfig);
-    }
-  }, []);
+  watchAccount(wagmiConfig, {
+    onChange: (data) => {
+      setWallet(data.address);
+      onAccountChanged(data);
+      if (!data.address) {
+        modal.close();
+      }
+    },
+  });
 
   useEffect(() => {
     if (w3m === true && modal) {
@@ -159,24 +141,9 @@ export default function WalletContextProvider(
     }
   }, [w3m]);
 
-  console.log("globalThis.queryClient:", globalThis.queryClient);
-
-  return wagmiConfig ? (
-    <WagmiProvider config={wagmiConfig}>
-      {globalThis.queryClient ? (
-        <QueryClientProvider client={globalThis.queryClient}>
-          <Connect
-            // address={connectedWallet}
-            siwe={siwe}
-            setSiwe={setSiwe}
-            address={wallet}
-            brandColor={brandColor}
-            copyColor={copyColor}
-            isOpen={!!open}
-            close={() => setOpen(false)}
-          />
-        </QueryClientProvider>
-      ) : (
+  return (
+    <WagmiProvider config={wagmiConfig as ResolvedRegister["config"]}>
+      <QueryClientProvider client={queryClient}>
         <Connect
           // address={connectedWallet}
           siwe={siwe}
@@ -187,8 +154,8 @@ export default function WalletContextProvider(
           isOpen={!!open}
           close={() => setOpen(false)}
         />
-      )}
-      {props.children}
+        {props.children}
+      </QueryClientProvider>
     </WagmiProvider>
-  ) : null;
+  );
 }
