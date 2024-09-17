@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, lazy, Suspense } from "react";
 import { WagmiProvider } from "wagmi";
 import {
   watchChainId,
@@ -13,8 +13,9 @@ import { mainnet, sepolia, polygon, baseSepolia } from "wagmi/chains";
 import { createWeb3Modal } from "@web3modal/wagmi/react";
 import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import Connect from "./components/Connect";
 import type { AppKit } from "@web3modal/base";
+
+const Connect = lazy(() => import("./components/Connect"));
 
 const queryClient = new QueryClient();
 
@@ -66,7 +67,7 @@ export default function WalletContextProvider(
 
   useEffect(() => {
     // This code will run only after the component has mounted on the client
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       setIsClient(true); // Now window is available
     }
   }, []);
@@ -127,21 +128,19 @@ export default function WalletContextProvider(
     });
   }, [isClient]);
 
-  // reconnect(wagmiConfig);
-
-  // const { wagmiConfig } = useMemo(() => {
-
   return (
     <WagmiProvider config={wagmiConfig as ResolvedRegister["config"]}>
       <QueryClientProvider client={queryClient}>
-        {modal && isClient && (
-          <Connect
-            // address={connectedWallet}
-            brandColor={brandColor}
-            copyColor={copyColor}
-            isOpen={!!open}
-            close={() => setOpen(false)}
-          />
+        {modal && (
+          <Suspense fallback={<></>}>
+            <Connect
+              // address={connectedWallet}
+              brandColor={brandColor}
+              copyColor={copyColor}
+              isOpen={!!open}
+              close={() => setOpen(false)}
+            />
+          </Suspense>
         )}
         <Observer
           onAccountChanged={onAccountChanged}
