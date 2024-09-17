@@ -1,7 +1,8 @@
 import { useCallback } from "react";
 import Web3ConnectButton from "./Web3Connect";
 // https://nodejs.org/api/packages.html#packages_self_referencing_a_package_using_its_name
-import { ConnectModal, useNPaymeContext } from "@npaymelabs/connect";
+import { useNPaymeContext } from "@npaymelabs/connect";
+import ConnectModal from "@npaymelabs/connect/connect-modal";
 import SignIn from "./SignIn";
 import { useAccount } from "wagmi";
 

@@ -27,21 +27,12 @@ export default defineConfig({
         "viem",
         "@tanstack/react-query",
       ],
-      input: Object.fromEntries(
-        // https://rollupjs.org/configuration-options/#input
-        glob
-          .sync("lib/**/*.{ts,tsx}", {
-            ignore: ["lib/**/*.d.ts"],
-          })
-          .map((file) => [
-            // 1. The name of the entry point
-            // lib/nested/foo.js becomes nested/foo
-            relative("lib", file.slice(0, file.length - extname(file).length)),
-            // 2. The absolute path to the entry file
-            // lib/nested/foo.ts becomes /project/lib/nested/foo.ts
-            fileURLToPath(new URL(file, import.meta.url)),
-          ])
-      ),
+      input: {
+        index: resolve(__dirname, "lib/main.ts"),
+
+        // Separate entry point for ConnectModal
+        "connect-modal": resolve(__dirname, "lib/components/ConnectModal.tsx"),
+      },
       output: {
         assetFileNames: "assets/[name][extname]",
         entryFileNames: "[name].js",

@@ -3,14 +3,24 @@
   "private": false,
   "version": "0.0.25",
   "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/lib/main.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/lib/main.d.ts",
-      "default": "./dist/main.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/lib/main.d.ts"
+    },
+    "./connect-modal": {
+      "import": "./dist/connect-modal.js",
+      "require": "./dist/connect-modal.js",
+      "types": "./dist/lib/components/ConnectModal.d.ts"
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "!dist/**/*.map"
   ],
   "repository": {
     "type": "git",
