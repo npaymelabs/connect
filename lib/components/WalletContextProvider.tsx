@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, lazy, Suspense } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { WagmiProvider } from "wagmi";
 import {
   watchChainId,
@@ -44,8 +44,8 @@ export default function WalletContextProvider(
   props: WalletContextProviderProps
 ) {
   const {
-    brandColor,
-    copyColor,
+    // brandColor,
+    // copyColor,
     projectId = "64c300c731392456340fe626355b366e",
     chains = [mainnet, sepolia, polygon, baseSepolia],
     metadata = {
@@ -54,8 +54,8 @@ export default function WalletContextProvider(
       url: "",
       icons: [],
     },
-    open,
-    setOpen,
+    // open,
+    // setOpen,
     w3m,
     setW3M,
     onAccountChanged,
