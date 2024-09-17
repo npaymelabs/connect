@@ -10,8 +10,8 @@ import {
 } from "@wagmi/core";
 import { mainnet, sepolia, polygon, baseSepolia } from "wagmi/chains";
 // https://github.com/WalletConnect/web3modal/issues/1549#issuecomment-1845352911
-import { createWeb3Modal } from '@web3modal/wagmi/react'
-import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
+import { createWeb3Modal } from "@web3modal/wagmi/react";
+import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Connect from "./components/Connect";
 import type { AppKit } from "@web3modal/base";
@@ -62,6 +62,15 @@ export default function WalletContextProvider(
     ssr,
   } = props;
 
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    // This code will run only after the component has mounted on the client
+    if (typeof window !== 'undefined') {
+      setIsClient(true); // Now window is available
+    }
+  }, []);
+
   const [, setWallet] = useState<`0x${string}` | undefined>();
 
   const wagmiConfig = defaultWagmiConfig({
@@ -98,10 +107,10 @@ export default function WalletContextProvider(
     // }
   });
 
-  
-
   const modal = useMemo(() => {
-    if (window === undefined) return null;
+    if (isClient) {
+      return null;
+    }
 
     return createWeb3Modal({
       wagmiConfig,
@@ -116,7 +125,7 @@ export default function WalletContextProvider(
         "--w3m-color-mix-strength": 20,
       },
     });
-  }, []);
+  }, [isClient]);
 
   // reconnect(wagmiConfig);
 
@@ -125,7 +134,7 @@ export default function WalletContextProvider(
   return (
     <WagmiProvider config={wagmiConfig as ResolvedRegister["config"]}>
       <QueryClientProvider client={queryClient}>
-        {modal && (
+        {modal && isClient && (
           <Connect
             // address={connectedWallet}
             brandColor={brandColor}

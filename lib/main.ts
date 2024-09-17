@@ -1,3 +1,3 @@
-import WalletContextProvider from './components/connect'
+import WalletContextProvider from './components/WalletContextProvider'
 
 export { WalletContextProvider as default }
