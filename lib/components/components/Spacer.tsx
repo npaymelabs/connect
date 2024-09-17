@@ -1,8 +1,14 @@
-import styled from 'styled-components'
+import styled from "styled-components";
 
-const Spacer = styled.div<{ horizontal?: boolean; size: number; style: any }>`
+type SpacerProps = {
+  horizontal?: boolean;
+  size: number;
+  style?: any;
+};
+
+const Spacer = styled.div<SpacerProps>`
   min-width: ${(props) => props.horizontal && props.size}px;
   min-height: ${(props) => !props.horizontal && props.size}px;
-`<any>
+`<any>;
 
-export default Spacer
+export default Spacer;

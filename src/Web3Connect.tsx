@@ -1,21 +1,25 @@
 // import { useAccount } from 'wagmi'
 
-const Web3ConnectButton = ({ address, openModal, openWeb3Modal }: {
-  address: string
-  openModal: () => void
-  openWeb3Modal: () => void
-}) => {
-   
+import { Address } from "viem";
 
+const Web3ConnectButton = ({
+  address,
+  openModal,
+  openWeb3Modal,
+}: {
+  address: Address | undefined;
+  openModal: () => void;
+  openWeb3Modal: () => void;
+}) => {
   // const { isConnecting, isDisconnected, isReconnecting } = useAccount()
 
   const handleClick = () => {
     if (address) {
-      openWeb3Modal()
+      openWeb3Modal();
     } else {
-      openModal()
+      openModal();
     }
-  }
+  };
 
   return (
     <button
@@ -26,9 +30,9 @@ const Web3ConnectButton = ({ address, openModal, openWeb3Modal }: {
         ? `${address.substring(0, 4)}...${address.substring(
             address.length - 4
           )}`
-        : 'Connect Web3 Wallet'}
+        : "Connect Web3 Wallet"}
     </button>
-  )
-}
+  );
+};
 
-export default Web3ConnectButton
+export default Web3ConnectButton;

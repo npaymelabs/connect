@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { createContext, useEffect, useMemo, useState } from "react";
 import { WagmiProvider } from "wagmi";
 import {
-  watchChainId,
   watchAccount,
   CreateConfigParameters,
   ResolvedRegister,
@@ -15,13 +14,9 @@ import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { AppKit } from "@web3modal/base";
 
-// const Connect = lazy(() => import("./components/Connect"));
-
 const queryClient = new QueryClient();
 
 type WalletContextProviderProps = {
-  brandColor?: string;
-  copyColor?: string;
   projectId?: string;
   chains?: CreateConfigParameters["chains"];
   ssr?: boolean;
@@ -31,21 +26,32 @@ type WalletContextProviderProps = {
     url: string;
     icons: Array<string>;
   };
-  open?: boolean | null;
-  setOpen: (open: boolean) => void;
-  w3m: boolean | null;
-  setW3M: (we3: boolean | null) => void;
-  onAccountChanged: (any: any, prev?: number | string) => void;
-  onNetworkChanged?: (any: number, prev?: number | string) => void;
   children: React.ReactNode;
 };
+
+type NPaymeConnectContextType = {
+  open: () => void;
+  close: () => void;
+  isOpen: boolean;
+  setW3M: (we3: boolean | null) => void; 
+  w3m: boolean | null;
+};
+
+export const NPaymeConnectContext = createContext<NPaymeConnectContextType>({
+  open: () => {},
+  close: () => {},
+  isOpen: false,
+  setW3M: (_: boolean | null) => {},
+  w3m: null,
+});
 
 export default function WalletContextProvider(
   props: WalletContextProviderProps
 ) {
+  const [open, setOpen] = useState(false);
+  const [w3m, setW3M] = useState<boolean | null>(null);
+
   const {
-    // brandColor,
-    // copyColor,
     projectId = "64c300c731392456340fe626355b366e",
     chains = [mainnet, sepolia, polygon, baseSepolia],
     metadata = {
@@ -54,12 +60,6 @@ export default function WalletContextProvider(
       url: "",
       icons: [],
     },
-    // open,
-    // setOpen,
-    w3m,
-    setW3M,
-    onAccountChanged,
-    onNetworkChanged,
     ssr,
   } = props;
 
@@ -71,8 +71,6 @@ export default function WalletContextProvider(
       setIsClient(true); // Now window is available
     }
   }, []);
-
-  const [, setWallet] = useState<`0x${string}` | undefined>();
 
   const wagmiConfig = defaultWagmiConfig({
     chains,
@@ -129,67 +127,50 @@ export default function WalletContextProvider(
   }, [isClient]);
 
   return (
-    <WagmiProvider config={wagmiConfig as ResolvedRegister["config"]}>
-      <QueryClientProvider client={queryClient}>
-        {/* {modal && (
-          <Suspense fallback={<></>}>
-            <Connect
-              // address={connectedWallet}
-              brandColor={brandColor}
-              copyColor={copyColor}
-              isOpen={!!open}
-              close={() => setOpen(false)}
-            />
-          </Suspense>
-        )} */}
-        <Observer
-          onAccountChanged={onAccountChanged}
-          setW3M={setW3M}
-          w3m={w3m}
-          onNetworkChanged={onNetworkChanged}
-          wagmiConfig={wagmiConfig}
-          setWallet={setWallet}
-          modal={modal}
-        />
-        {props.children}
-      </QueryClientProvider>
-    </WagmiProvider>
+    <NPaymeConnectContext.Provider
+      value={{
+        open: () => setOpen(true),
+        close: () => setOpen(false),
+        isOpen: open,
+        setW3M,
+        w3m,
+      }}
+    >
+      <WagmiProvider config={wagmiConfig as ResolvedRegister["config"]}>
+        <QueryClientProvider client={queryClient}>
+          <Observer
+            setW3M={setW3M}
+            w3m={w3m}
+            wagmiConfig={wagmiConfig}
+            modal={modal}
+          />
+          {props.children}
+        </QueryClientProvider>
+      </WagmiProvider>
+    </NPaymeConnectContext.Provider>
   );
 }
 
 const Observer = ({
-  onAccountChanged,
   setW3M,
   w3m,
-  onNetworkChanged,
   wagmiConfig,
-  setWallet,
   modal,
 }: {
   wagmiConfig: Config;
   w3m: boolean | null;
   setW3M: (we3: boolean | null) => void;
-  onAccountChanged: (any: any, prev?: number | string) => void;
-  onNetworkChanged?: (any: number, prev?: number | string) => void;
   modal: AppKit | null;
-  setWallet: (address: `0x${string}` | undefined) => void;
 }) => {
   useEffect(() => {
     console.log("Observer is running");
 
-    watchChainId(wagmiConfig, {
-      onChange: (chainId, prevChainId) => {
-        if (typeof onNetworkChanged === "function") {
-          onNetworkChanged(chainId, prevChainId);
-        }
-      },
-    });
-
     watchAccount(wagmiConfig, {
       onChange: (data) => {
-        setWallet(data.address);
-        onAccountChanged(data);
-        if (!data.address && modal) {
+        if (data.address && modal) {
+
+          console.log("[WalletContextProvider - Observer] Wallet connected", data.address);
+          setW3M(false);
           modal.close();
         }
       },

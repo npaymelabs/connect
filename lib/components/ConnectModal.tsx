@@ -1,29 +1,26 @@
 import { useEffect } from "react";
 
-import Modal from "./Modal";
-import ProgrammeHeader from "../header/Header";
-import { BaseLabel, Link } from "./DataDisplay";
-import { BrandedProgrammeButton } from "./Buttons";
-import { CreateWalletButton } from "../smartwallet/CreateWalletButton";
-import Spacer from "./Spacer";
-import SectionWrapper from "./SectionWrapper";
-import Body from "./Body";
+import Modal from "./components/Modal";
+import ProgrammeHeader from "./header/Header";
+import { BaseLabel, Link } from "./components/DataDisplay";
+import { BrandedProgrammeButton } from "./components/Buttons";
+import { CreateWalletButton } from "./smartwallet/CreateWalletButton";
+import Spacer from "./components/Spacer";
+import SectionWrapper from "./components/SectionWrapper";
+import Body from "./components/Body";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { useAccount } from "wagmi";
+import { useNPaymeContext } from "./hooks/useNPaymeContext";
 
-function Connect(props: {
-  brandColor?: string;
-  copyColor?: string;
-  isOpen: boolean;
-  close: () => void;
-}) {
+function ConnectModal(props: { brandColor?: string; copyColor?: string }) {
+  const { isOpen, close } = useNPaymeContext();
+
   const account = useAccount();
-  const { brandColor, copyColor, isOpen, close } = props;
+  const { brandColor, copyColor } = props;
 
   // const { address } = useAccount()
   const { open: openWeb3Modal, close: closeWeb3Modal } = useWeb3Modal();
 
-  console.log("address............... 0", account.address);
   useEffect(() => {
     if (typeof window !== "undefined") {
       document.documentElement.style.setProperty(
@@ -96,7 +93,6 @@ function Connect(props: {
         </SectionWrapper>
         <SectionWrapper>
           <Link
-            text-transform="none"
             href={`https://ethereum.org/en/web3/`}
             target={"_blank"}
           >
@@ -108,4 +104,4 @@ function Connect(props: {
   );
 }
 
-export default Connect;
+export default ConnectModal;

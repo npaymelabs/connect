@@ -1,60 +1,38 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import Web3ConnectButton from "./Web3Connect";
-
 // https://nodejs.org/api/packages.html#packages_self_referencing_a_package_using_its_name
-import ContextProvider from "@npaymelabs/connect";
-import { mainnet, sepolia, polygon, baseSepolia } from "viem/chains";
+import { ConnectModal, useNPaymeContext } from "@npaymelabs/connect";
 import SignIn from "./SignIn";
-
-const metadata = {
-  name: "example",
-  description: "npayme connect example",
-  url: "",
-  icons: [],
-};
+import { useAccount } from "wagmi";
 
 function App() {
-  const [open, setOpen] = useState(false);
-  const [w3m, setW3m] = useState<boolean | null>(null);
-  const [address, setAddress] = useState("");
+  const npayme = useNPaymeContext();
+  const { address } = useAccount();
 
-  console.log("address.....0", address);
-  const onAccountChanged = useCallback((data: any) => {
-    console.log(`onAccountChanged.......: address = '${address}' `, data);
-    const { address: update = "" } = data;
-    if ((update && update != address) || !update) {
-      console.log("Update address to......", update);
-      setAddress(update);
-      setOpen(false);
-    }
-  }, []);
+  // const onAccountChanged = useCallback((data: any) => {
+  //   console.log(`onAccountChanged.......: address = '${address}' `, data);
+  //   const { address: update = "" } = data;
 
-  const openModal = useCallback(() => setOpen(true), []);
-  const openWeb3Modal = useCallback(() => setW3m(true), []);
+  //   if ((update && update != address) || !update) {
+  //     console.log("Update address to......", update);
+  //     npayme.close();
+  //   }
+  // }, []);
 
-
-  console.log("address.....1", address);
-
-  const chains = [mainnet, sepolia, polygon, baseSepolia] as const;
+  const openModal = useCallback(() => npayme.open(), []);
+  const openWeb3Modal = useCallback(() => npayme.setW3M(true), []);
 
   return (
-    <ContextProvider
-      chains={chains}
-      metadata={metadata}
-      open={open}
-      setOpen={setOpen}
-      w3m={w3m}
-      setW3M={setW3m}
-      onAccountChanged={onAccountChanged}
-    >
+    <>
+      <ConnectModal />
       <Web3ConnectButton
         address={address}
         openModal={openModal}
         openWeb3Modal={openWeb3Modal}
       />
-      {address && <SignIn/>}
+      {address && <SignIn />}
       <h1> @npaymelabs/connect </h1>
-    </ContextProvider>
+    </>
   );
 }
 

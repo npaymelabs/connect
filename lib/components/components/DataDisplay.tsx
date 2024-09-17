@@ -5,6 +5,7 @@ export const Link = styled.a`
   font-size: 10px;
   line-height: 12px;
   margin-bottom: 4px;
+  text-transform: none;
   color: var(--widget-contrast-high);
 `<any>
 

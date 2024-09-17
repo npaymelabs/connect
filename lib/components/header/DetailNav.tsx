@@ -39,7 +39,7 @@ function DetailNav({ back, color, address }: Props) {
     <Container color={color}>
       <BackButton onClick={back} color={color}>
         <ArrowLeft size={20} fill={color} />
-        <Spacer size={12} horizontal="true" />
+        <Spacer size={12} horizontal={true} />
         Back
       </BackButton>
       <Address>{addr}</Address>
