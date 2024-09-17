@@ -15,7 +15,7 @@ import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { AppKit } from "@web3modal/base";
 
-const Connect = lazy(() => import("./components/Connect"));
+// const Connect = lazy(() => import("./components/Connect"));
 
 const queryClient = new QueryClient();
 
@@ -131,7 +131,7 @@ export default function WalletContextProvider(
   return (
     <WagmiProvider config={wagmiConfig as ResolvedRegister["config"]}>
       <QueryClientProvider client={queryClient}>
-        {modal && (
+        {/* {modal && (
           <Suspense fallback={<></>}>
             <Connect
               // address={connectedWallet}
@@ -141,7 +141,7 @@ export default function WalletContextProvider(
               close={() => setOpen(false)}
             />
           </Suspense>
-        )}
+        )} */}
         <Observer
           onAccountChanged={onAccountChanged}
           setW3M={setW3M}
