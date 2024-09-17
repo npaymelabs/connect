@@ -101,6 +101,8 @@ export default function WalletContextProvider(
   
 
   const modal = useMemo(() => {
+    if (window === undefined) return null;
+
     return createWeb3Modal({
       wagmiConfig,
       projectId,
@@ -161,7 +163,7 @@ const Observer = ({
   setW3M: (we3: boolean | null) => void;
   onAccountChanged: (any: any, prev?: number | string) => void;
   onNetworkChanged?: (any: number, prev?: number | string) => void;
-  modal: AppKit;
+  modal: AppKit | null;
   setWallet: (address: `0x${string}` | undefined) => void;
 }) => {
   useEffect(() => {
