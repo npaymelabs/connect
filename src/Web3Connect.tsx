@@ -12,12 +12,14 @@ const Web3ConnectButton = ({ openModal, openWeb3Modal }: { openModal: () => void
   useEffect(() => {
     if (address) {
       setText(OPEN_WEB3_WALLET);
+    } else {
+      setText(CONNECT_WEB3_WALLET);
     }
   }, [address]);
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     if (address) {
-      signMessageAsync({
+      const signature = await signMessageAsync({
         domain: window.location.host,
         address: address,
         statement: 'Sign in to example.com',
@@ -27,6 +29,8 @@ const Web3ConnectButton = ({ openModal, openWeb3Modal }: { openModal: () => void
         nonce: '1234556789',
         targets: [],
       });
+
+      console.log('App signature....', signature);
     }
   };
 

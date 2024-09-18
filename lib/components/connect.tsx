@@ -1,6 +1,5 @@
 import React, { useEffect, useCallback, createContext, useContext } from 'react';
 import { WagmiProvider } from 'wagmi';
-// import { watchChainId } from '@wagmi/core';
 import { CreateConfigParameters } from '@wagmi/core';
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config';
 import { createWeb3Modal } from '@web3modal/wagmi/react';
@@ -13,9 +12,7 @@ import { CreateWalletButton } from '../components/smartwallet/CreateWalletButton
 import Spacer from './components/Spacer';
 import SectionWrapper from './components/SectionWrapper';
 import Body from './components/Body';
-// import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useAccount, useSignMessage } from 'wagmi';
-// import { useConnect } from 'wagmi';
 import { SiweMessage } from 'siwe';
 import { AppKit } from '@web3modal/base';
 
@@ -75,36 +72,22 @@ export function ConnectContextProvider(props: {
   setSiwe?: any;
   children: React.ReactNode;
 }) {
-  const { children, siwe, setSiwe /* , changeAddress */, handleSuccess } = props;
+  const { children, siwe, setSiwe, handleSuccess } = props;
 
-  // const [update, setAddress] = useState<AddressType>();
   const { signMessageAsync } = useSignMessage();
 
-  const { address, isConnected, status } = useAccount({
-    //@ts-ignore
-    onConnect({ address, connector, isReconnected }) {
-      console.log('Connected', { address, connector, isReconnected });
-    },
-    onDisconnect() {
-      console.log('Disconnected');
-    },
-  });
+  const { address, isConnected, status } = useAccount();
 
   console.log('status: ', status);
   console.log('isConnected: ', isConnected);
-  // const { /* open: openWeb3Modal, */ close: closeWeb3Modal } = useWeb3Modal();
   console.log('@npaymelabs/connect address...............', address);
 
   useEffect(() => {
     console.log('@npaymelabs/connect address changed...............', address);
 
-    // changeAddress(address);
-
     if (address && status === 'connected') {
       handleSuccess();
     }
-
-    // setAddress(address);
   }, [address, status]);
 
   useEffect(() => {
@@ -115,13 +98,6 @@ export function ConnectContextProvider(props: {
       }
     }
   }, [siwe]);
-
-  // const handleSuccess = () => {
-  //   // Cloase Web3Modal
-  //   // closeWeb3Modal();
-  //   // Close this modal
-  //   // close();
-  // };
 
   const handleSiwe = useCallback(async (siwe: ConnectMessageType) => {
     try {
@@ -171,7 +147,7 @@ export function ConnectContextProvider(props: {
   return (
     <ConnectContext.Provider
       value={{
-        address, // : update,
+        address,
         signMessageAsync: handleSiwe,
       }}
     >
@@ -197,13 +173,9 @@ export default function WalletProvider(parameters: WalletContextProviderProps) {
     setOpen,
     w3m,
     setW3m,
-    // onAccountChanged,
-    // onNetworkChanged,
     siwe,
     setSiwe,
   } = config;
-
-  // const [modal, setModal] = useState<AppKit | null>(null);
 
   const wagmiConfig = defaultWagmiConfig({
     chains,
@@ -219,15 +191,6 @@ export default function WalletProvider(parameters: WalletContextProviderProps) {
     enableInjected: true,
   });
 
-  // useEffect(() => {
-
-  //   return () => {
-  //     closeWeb3Modal();
-  //   };
-  // }, []);
-
-  // const { connect, connectors } = useConnect();
-
   useEffect(() => {
     if (typeof window !== 'undefined') {
       document.documentElement.style.setProperty('--npayme__brand-color', brandColor || '#000');
@@ -242,7 +205,6 @@ export default function WalletProvider(parameters: WalletContextProviderProps) {
 
     if (!modal) {
       console.log('@npaymelabs/connect: create web3 modal....');
-      // setModal(
       modal = createWeb3Modal({
         wagmiConfig,
         projectId,
@@ -256,7 +218,6 @@ export default function WalletProvider(parameters: WalletContextProviderProps) {
           '--w3m-color-mix-strength': 20,
         },
       });
-      // );
 
       // watchChainId(wagmiConfig, {
       //   onChange: (chainId, prevChainId) => {
@@ -285,18 +246,15 @@ export default function WalletProvider(parameters: WalletContextProviderProps) {
 
   const closeModal = useCallback(() => setOpen(false), []);
   const closeWeb3Modal = useCallback(() => modal?.close(), [modal]);
-  const connectWeb3Wallet = useCallback(() => modal?.open(), [modal]);
-  const handleSuccess = useCallback(() => {
-    console.log('handleSuccess............');
-    // Cloase Web3Modal
-    closeWeb3Modal();
-    // if (modal) {
-    //   modal?.close();
-    // }
+  const connectWeb3Wallet = useCallback(() => {
+    if (modal) {
+      closeModal();
+      modal?.open();
+    }
+  }, [modal]);
 
-    // Close this modal
-    // close();
-    // setOpen(false);
+  const handleSuccess = useCallback(() => {
+    closeWeb3Modal();
     closeModal();
   }, [modal]);
 
