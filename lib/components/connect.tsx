@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createContext, useContext } from 'react';
+import React, { useEffect, useCallback, createContext, useContext } from 'react';
 import { WagmiProvider } from 'wagmi';
 // import { watchChainId } from '@wagmi/core';
 import { CreateConfigParameters } from '@wagmi/core';
@@ -13,8 +13,9 @@ import { CreateWalletButton } from '../components/smartwallet/CreateWalletButton
 import Spacer from './components/Spacer';
 import SectionWrapper from './components/SectionWrapper';
 import Body from './components/Body';
-import { useWeb3Modal } from '@web3modal/wagmi/react';
+// import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useAccount, useSignMessage } from 'wagmi';
+// import { useConnect } from 'wagmi';
 import { SiweMessage } from 'siwe';
 import { AppKit } from '@web3modal/base';
 
@@ -46,7 +47,7 @@ type WalletContextConfigProps = {
   setOpen: (open: boolean) => void;
   w3m: boolean | null;
   setW3m: (we3: boolean | null) => void;
-  onAccountChanged: (any: any, prev?: number | string) => void;
+  // onAccountChanged: (any: any, prev?: number | string) => void;
   onNetworkChanged?: (any: number, prev?: number | string) => void;
   siwe?: any;
   setSiwe?: (any: any) => void;
@@ -62,56 +63,48 @@ type ConnectContextType = {
   signMessageAsync: (siwe: ConnectMessageType) => Promise<any>;
 };
 
+let modal: AppKit;
 const queryClient = new QueryClient();
 
 export const ConnectContext = createContext<ConnectContextType | null>(null);
 
 export function ConnectContextProvider(props: {
-  changeAddress: (address: AddressType) => void;
-  brandColor?: string;
-  copyColor?: string;
-  isOpen: boolean;
-  close: () => void;
+  changeAddress?: (address: AddressType) => void;
+  handleSuccess: () => void;
   siwe: any;
   setSiwe: any;
   children: React.ReactNode;
 }) {
-  const { children, brandColor, copyColor, isOpen, close, siwe, setSiwe, changeAddress } = props;
+  const { children, siwe, setSiwe /* , changeAddress */, handleSuccess } = props;
 
-  const [update, setAddress] = useState<AddressType>();
+  // const [update, setAddress] = useState<AddressType>();
   const { signMessageAsync } = useSignMessage();
 
-  const { address } = useAccount();
-  const { open: openWeb3Modal, close: closeWeb3Modal } = useWeb3Modal();
+  const { address, isConnected, status } = useAccount({
+    //@ts-ignore
+    onConnect({ address, connector, isReconnected }) {
+      console.log('Connected', { address, connector, isReconnected });
+    },
+    onDisconnect() {
+      console.log('Disconnected');
+    },
+  });
+
+  console.log('status: ', status);
+  console.log('isConnected: ', isConnected);
+  // const { /* open: openWeb3Modal, */ close: closeWeb3Modal } = useWeb3Modal();
   console.log('@npaymelabs/connect address...............', address);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      document.documentElement.style.setProperty('--npayme__brand-color', brandColor || '#000');
-      document.documentElement.style.setProperty('--npayme__copy-color', copyColor || '#fff');
-      document.documentElement.style.setProperty('--widget-card', '#fff');
-      document.documentElement.style.setProperty('--widget-contrast', '#1A1A1A');
-      document.documentElement.style.setProperty('--widget-contrast-low', '#464646');
-      document.documentElement.style.setProperty('--widget-contrast-high', '#000');
-
-      document.documentElement.style.setProperty('--bg', copyColor || '#f2f4f5');
-    }
-
-    return () => {
-      closeWeb3Modal();
-    };
-  }, []);
 
   useEffect(() => {
     console.log('@npaymelabs/connect address changed...............', address);
 
-    changeAddress(address);
+    // changeAddress(address);
 
     if (address) {
       handleSuccess();
     }
 
-    setAddress(address);
+    // setAddress(address);
   }, [address]);
 
   useEffect(() => {
@@ -123,15 +116,14 @@ export function ConnectContextProvider(props: {
     }
   }, [siwe]);
 
-  const handleSuccess = () => {
-    // Cloase Web3Modal
-    closeWeb3Modal();
+  // const handleSuccess = () => {
+  //   // Cloase Web3Modal
+  //   // closeWeb3Modal();
+  //   // Close this modal
+  //   // close();
+  // };
 
-    // Close this modal
-    close();
-  };
-
-  const handleSiwe = async (siwe: ConnectMessageType) => {
+  const handleSiwe = useCallback(async (siwe: ConnectMessageType) => {
     try {
       const { domain, address, statement, uri, version, chainId, nonce, targets = [] } = siwe;
 
@@ -174,35 +166,15 @@ export function ConnectContextProvider(props: {
     } catch (error) {
       console.log(error);
     }
-  };
+  }, []);
 
   return (
     <ConnectContext.Provider
       value={{
-        address: update,
+        address, // : update,
         signMessageAsync: handleSiwe,
       }}
     >
-      <Modal isOpen={isOpen} close={close}>
-        <ProgrammeHeader title="Join & Sign In" back={close} />
-        <Body>
-          <SectionWrapper>
-            <BaseLabel text-transform="none">I'd like to join and I need a Web3 Wallet</BaseLabel>
-            <Spacer size={8} />
-            <CreateWalletButton handleSuccess={handleSuccess} handleError={(e) => console.log(e)} />
-          </SectionWrapper>
-          <SectionWrapper>
-            <BaseLabel>I already have a Web3 Wallet</BaseLabel>
-            <Spacer size={8} />
-            <BrandedProgrammeButton onClick={() => openWeb3Modal()}>Connect Web3 Wallet</BrandedProgrammeButton>
-          </SectionWrapper>
-          <SectionWrapper>
-            <Link text-transform="none" href={`https://ethereum.org/en/web3/`} target={'_blank'}>
-              What's a Web3 Wallet and why do I need one?
-            </Link>
-          </SectionWrapper>
-        </Body>
-      </Modal>
       {children}
     </ConnectContext.Provider>
   );
@@ -225,13 +197,13 @@ export default function WalletProvider(parameters: WalletContextProviderProps) {
     setOpen,
     w3m,
     setW3m,
-    onAccountChanged,
+    // onAccountChanged,
     // onNetworkChanged,
     siwe,
     setSiwe,
   } = config;
 
-  const [modal, setModal] = useState<AppKit | null>(null);
+  // const [modal, setModal] = useState<AppKit | null>(null);
 
   const wagmiConfig = defaultWagmiConfig({
     chains,
@@ -247,23 +219,44 @@ export default function WalletProvider(parameters: WalletContextProviderProps) {
     enableInjected: true,
   });
 
+  // useEffect(() => {
+
+  //   return () => {
+  //     closeWeb3Modal();
+  //   };
+  // }, []);
+
+  // const { connect, connectors } = useConnect();
+
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      document.documentElement.style.setProperty('--npayme__brand-color', brandColor || '#000');
+      document.documentElement.style.setProperty('--npayme__copy-color', copyColor || '#fff');
+      document.documentElement.style.setProperty('--widget-card', '#fff');
+      document.documentElement.style.setProperty('--widget-contrast', '#1A1A1A');
+      document.documentElement.style.setProperty('--widget-contrast-low', '#464646');
+      document.documentElement.style.setProperty('--widget-contrast-high', '#000');
+
+      document.documentElement.style.setProperty('--bg', copyColor || '#f2f4f5');
+    }
+
     if (!modal) {
-      setModal(
-        createWeb3Modal({
-          wagmiConfig,
-          projectId,
-          themeMode: 'light',
-          // defaultChain: mainnet,
-          // allWallets: 'ONLY_MOBILE',
-          excludeWalletIds: [],
-          enableSwaps: true, // Optional - true by default
-          themeVariables: {
-            '--w3m-color-mix': '#00DCFF',
-            '--w3m-color-mix-strength': 20,
-          },
-        })
-      );
+      console.log('@npaymelabs/connect: create web3 modal....');
+      // setModal(
+      modal = createWeb3Modal({
+        wagmiConfig,
+        projectId,
+        themeMode: 'light',
+        // defaultChain: mainnet,
+        // allWallets: 'ONLY_MOBILE',
+        excludeWalletIds: [],
+        enableSwaps: true, // Optional - true by default
+        themeVariables: {
+          '--w3m-color-mix': '#00DCFF',
+          '--w3m-color-mix-strength': 20,
+        },
+      });
+      // );
 
       // watchChainId(wagmiConfig, {
       //   onChange: (chainId, prevChainId) => {
@@ -282,27 +275,65 @@ export default function WalletProvider(parameters: WalletContextProviderProps) {
     }
   }, [w3m]);
 
-  const changeAddress = (address: AddressType) => {
-    onAccountChanged({ address });
-  };
+  const changeAddress = useCallback((address: AddressType) => {
+    if (address) {
+      handleSuccess();
+    }
+
+    // onAccountChanged({ address });
+  }, []);
+
+  const closeModal = useCallback(() => setOpen(false), []);
+  const closeWeb3Modal = useCallback(() => modal?.close(), [modal]);
+  const connectWeb3Wallet = useCallback(() => modal?.open(), [modal]);
+  const handleSuccess = useCallback(() => {
+    console.log('handleSuccess............');
+    // Cloase Web3Modal
+    closeWeb3Modal();
+    // if (modal) {
+    //   modal?.close();
+    // }
+
+    // Close this modal
+    // close();
+    // setOpen(false);
+    closeModal();
+  }, [modal]);
 
   return (
     <>
       {/* @ts-ignore */}
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>
-          {modal ? (
-            <ConnectContextProvider
-              siwe={siwe}
-              setSiwe={setSiwe}
-              changeAddress={changeAddress}
-              brandColor={brandColor}
-              copyColor={copyColor}
-              isOpen={!!open}
-              close={() => setOpen(false)}
-              children={children}
-            />
-          ) : null}
+          <ConnectContextProvider
+            siwe={siwe}
+            setSiwe={setSiwe}
+            changeAddress={changeAddress}
+            handleSuccess={handleSuccess}
+          >
+            {children}
+          </ConnectContextProvider>
+
+          <Modal isOpen={!!open} close={closeModal}>
+            <ProgrammeHeader title="Join & Sign In" back={closeModal} />
+            <Body>
+              <SectionWrapper>
+                <BaseLabel text-transform="none">I'd like to join and I need a Web3 Wallet</BaseLabel>
+                <Spacer size={8} />
+                <CreateWalletButton handleSuccess={handleSuccess} handleError={(e) => console.log(e)} />
+              </SectionWrapper>
+              <SectionWrapper>
+                <BaseLabel>I already have a Web3 Wallet</BaseLabel>
+                <Spacer size={8} />
+                <BrandedProgrammeButton onClick={connectWeb3Wallet}>Connect Web3 Wallet</BrandedProgrammeButton>
+              </SectionWrapper>
+              <SectionWrapper>
+                <Link text-transform="none" href={`https://ethereum.org/en/web3/`} target={'_blank'}>
+                  What's a Web3 Wallet and why do I need one?
+                </Link>
+              </SectionWrapper>
+            </Body>
+          </Modal>
         </QueryClientProvider>
       </WagmiProvider>
     </>

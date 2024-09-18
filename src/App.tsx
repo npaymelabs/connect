@@ -17,19 +17,8 @@ const metadata = {
 function App() {
   const [open, setOpen] = useState(false);
   const [w3m, setW3m] = useState<boolean | null>(null);
-  const [address, setAddress] = useState('');
 
   const [siwe, setSiwe] = useState<any>(null);
-
-  const onAccountChanged = useCallback((data: any) => {
-    const { address: update } = data;
-    setAddress((prev) => {
-      if ((prev && prev != update) || (prev && !update)) {
-        setOpen(false);
-      }
-      return update;
-    });
-  }, []);
 
   const openModal = useCallback(() => setOpen(true), []);
   const openWeb3Modal = useCallback(() => setW3m(true), []);
@@ -43,12 +32,11 @@ function App() {
         setOpen,
         w3m,
         setW3m,
-        onAccountChanged,
         siwe,
         setSiwe,
       }}
     >
-      <Web3ConnectButton /*address={address}*/ openModal={openModal} openWeb3Modal={openWeb3Modal} />
+      <Web3ConnectButton openModal={openModal} openWeb3Modal={openWeb3Modal} />
     </WalletProvider>
   );
 }

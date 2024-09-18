@@ -1,16 +1,18 @@
+import { useCallback, useEffect, useState } from 'react';
 import { useConnectContext } from '@npaymelabs/connect';
-// import { useAccount, useSignMessage } from 'wagmi';
 
-const Web3ConnectButton = ({
-  // address,
-  openModal,
-  openWeb3Modal,
-}: {
-  // address: string;
-  openModal: () => void;
-  openWeb3Modal: () => void;
-}) => {
+const CONNECT_WEB3_WALLET = 'Connect Web3 Wallet';
+const OPEN_WEB3_WALLET = 'Open Web3 Wallet';
+
+const Web3ConnectButton = ({ openModal, openWeb3Modal }: { openModal: () => void; openWeb3Modal: () => void }) => {
   const { address, signMessageAsync } = useConnectContext();
+  const [text, setText] = useState(CONNECT_WEB3_WALLET);
+
+  useEffect(() => {
+    if (address) {
+      setText(OPEN_WEB3_WALLET);
+    }
+  }, [address]);
 
   const handleSignIn = () => {
     if (address) {
@@ -35,13 +37,23 @@ const Web3ConnectButton = ({
     }
   };
 
+  const handleMouseOver = useCallback(() => {
+    setText(address ? `${address.substring(0, 4)}...${address.substring(address.length - 4)}` : CONNECT_WEB3_WALLET);
+  }, [address]);
+
+  const handleMouseLeave = useCallback(() => {
+    setText(address ? OPEN_WEB3_WALLET : CONNECT_WEB3_WALLET);
+  }, [address]);
+
   return (
     <>
       <button
         onClick={handleClick}
+        onMouseOver={handleMouseOver}
+        onMouseLeave={handleMouseLeave}
         // disabled={isConnecting || isReconnecting ? true : undefined}
       >
-        {address ? `${address.substring(0, 4)}...${address.substring(address.length - 4)}` : 'Connect Web3 Wallet'}
+        {text}
       </button>
       {address && <button onClick={handleSignIn}>Sign In With Ethereum</button>}
     </>
