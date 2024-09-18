@@ -10,7 +10,7 @@ import SectionWrapper from "./components/SectionWrapper";
 import Body from "./components/Body";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { useAccount } from "wagmi";
-import { useNPaymeContext } from "./hooks/useNPaymeContext";
+import { useNPaymeContext } from "../hooks/useNPaymeContext";
 
 function ConnectModal(props: { brandColor?: string; copyColor?: string }) {
   const { isOpen, close } = useNPaymeContext();

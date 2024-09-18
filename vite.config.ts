@@ -32,6 +32,8 @@ export default defineConfig({
 
         // Separate entry point for ConnectModal
         "connect-modal": resolve(__dirname, "lib/components/ConnectModal.tsx"),
+
+        "hooks/": resolve(__dirname, "lib/hooks/index.ts"),
       },
       output: {
         assetFileNames: "assets/[name][extname]",
