@@ -7,6 +7,7 @@ const OPEN_WEB3_WALLET = 'Open Web3 Wallet';
 const Web3ConnectButton = ({ openModal, openWeb3Modal }: { openModal: () => void; openWeb3Modal: () => void }) => {
   const { address, signMessageAsync } = useConnectContext();
   const [text, setText] = useState(CONNECT_WEB3_WALLET);
+  console.log('App address......', address);
 
   useEffect(() => {
     if (address) {

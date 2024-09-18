@@ -50,7 +50,7 @@ type WalletContextConfigProps = {
   // onAccountChanged: (any: any, prev?: number | string) => void;
   onNetworkChanged?: (any: number, prev?: number | string) => void;
   siwe?: any;
-  setSiwe?: (any: any) => void;
+  setSiwe?: any;
 };
 
 type WalletContextProviderProps = {
@@ -71,8 +71,8 @@ export const ConnectContext = createContext<ConnectContextType | null>(null);
 export function ConnectContextProvider(props: {
   changeAddress?: (address: AddressType) => void;
   handleSuccess: () => void;
-  siwe: any;
-  setSiwe: any;
+  siwe?: any;
+  setSiwe?: any;
   children: React.ReactNode;
 }) {
   const { children, siwe, setSiwe /* , changeAddress */, handleSuccess } = props;
@@ -100,12 +100,12 @@ export function ConnectContextProvider(props: {
 
     // changeAddress(address);
 
-    if (address) {
+    if (address && status === 'connected') {
       handleSuccess();
     }
 
     // setAddress(address);
-  }, [address]);
+  }, [address, status]);
 
   useEffect(() => {
     if (siwe && address) {

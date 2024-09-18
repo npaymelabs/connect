@@ -17,7 +17,6 @@ const metadata = {
 function App() {
   const [open, setOpen] = useState(false);
   const [w3m, setW3m] = useState<boolean | null>(null);
-
   const [siwe, setSiwe] = useState<any>(null);
 
   const openModal = useCallback(() => setOpen(true), []);
