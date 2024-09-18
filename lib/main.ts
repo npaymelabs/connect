@@ -1,3 +1,3 @@
-import WalletContextProvider from './components/connect'
+import WalletProvider, { useConnectContext } from './components/connect';
 
-export { WalletContextProvider as default }
+export { useConnectContext, WalletProvider as default };
