@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useEffect, useCallback, createContext, useContext } from 'react';
 import { WagmiProvider } from 'wagmi';
 import { CreateConfigParameters } from '@wagmi/core';
