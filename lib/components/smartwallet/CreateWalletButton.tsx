@@ -1,7 +1,9 @@
-import { useCallback } from "react";
-import { CoinbaseWalletSDK } from "@coinbase/wallet-sdk";
-import { CoinbaseWalletLogo } from "./CoinbaseWalletLogo";
-import { BrandedProgrammeButton } from "../components/Buttons";
+'use client';
+
+import { useCallback } from 'react';
+import { CoinbaseWalletSDK } from '@coinbase/wallet-sdk';
+import { CoinbaseWalletLogo } from './CoinbaseWalletLogo';
+import { BrandedProgrammeButton } from '../components/Buttons';
 
 // const buttonStyles = {
 //   background: 'transparent',
@@ -19,10 +21,9 @@ import { BrandedProgrammeButton } from "../components/Buttons";
 //   paddingRight: 30,
 //   borderRadius: 10
 // }
-
 const sdk = new CoinbaseWalletSDK({
-  appName: "My Dapp",
-  appLogoUrl: "https://example.com/logo.png",
+  appName: 'My Dapp',
+  appLogoUrl: 'https://example.com/logo.png',
   appChainIds: [84532],
 });
 
@@ -50,7 +51,7 @@ export function CreateWalletButton({
     try {
       // @ts-ignore
       const [address] = await provider.request({
-        method: "eth_requestAccounts",
+        method: 'eth_requestAccounts',
       });
       handleSuccess(address);
     } catch (error) {

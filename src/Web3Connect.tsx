@@ -1,11 +1,21 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useConnectContext } from '@npaymelabs/connect';
+// import { useConnectContext } from '@npaymelabs/connect';
+import { useAccount, useSignMessage } from 'wagmi';
+// import { useConnectContext } from './lib/main';
+// import { useAccount, useSignMessage } from 'wagmi';
 
 const CONNECT_WEB3_WALLET = 'Connect Web3 Wallet';
 const OPEN_WEB3_WALLET = 'Open Web3 Wallet';
 
 const Web3ConnectButton = ({ openModal, openWeb3Modal }: { openModal: () => void; openWeb3Modal: () => void }) => {
-  const { address, signMessageAsync } = useConnectContext();
+  // const { address, signMessageAsync } = useConnectContext();
+  const { address, isConnected, status } = useAccount();
+  const { signMessageAsync } = useSignMessage();
+  // const { signMessageAsync } = useSignMessage();
+  // @ts-ignore
+  // setsignMessageAsync(signMessageAsync);
+
+  // const { address, isConnected, status } = useAccount();
   const [text, setText] = useState(CONNECT_WEB3_WALLET);
   console.log('App address......', address);
 
@@ -20,6 +30,7 @@ const Web3ConnectButton = ({ openModal, openWeb3Modal }: { openModal: () => void
   const handleSignIn = async () => {
     if (address) {
       const signature = await signMessageAsync({
+        // @ts-ignore
         domain: window.location.host,
         address: address,
         statement: 'Sign in to example.com',
